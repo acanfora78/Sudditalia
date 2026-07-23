@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "columns": 4,
+        "products_per_page": 24,
+        "enable_tilt": true
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

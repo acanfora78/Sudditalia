@@ -1,0 +1,29 @@
+{%- comment -%} Pagina 404 {%- endcomment -%}
+<section class="section-spacing" style="text-align:center; min-height: 50vh; display:grid; place-items:center;">
+  <div class="page-width">
+    <h1 style="font-size: calc(clamp(4rem, 18vw, 12rem) * var(--font-heading-scale)); line-height:1;" data-animate="scale">404</h1>
+    <p class="text-muted" data-animate="fade">{{ section.settings.text }}</p>
+    <a href="{{ routes.root_url }}" class="btn" data-animate style="--i:2;">{{ section.settings.button_label }}</a>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "404",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Testo",
+      "default": "Questa pagina è stata inghiottita. Torna in superficie."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Bottone",
+      "default": "Torna alla home"
+    }
+  ]
+}
+{% endschema %}

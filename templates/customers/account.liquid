@@ -1,0 +1,30 @@
+<section class="section-spacing"><div class="page-width">
+  <h1 data-animate>{{ 'customer.account.title' | t }}</h1>
+  <p><a href="{{ routes.account_logout_url }}" class="btn btn--outline">{{ 'customer.log_out' | t }}</a></p>
+
+  <h2 style="margin-top:32px;">{{ 'customer.orders.title' | t }}</h2>
+  {%- paginate customer.orders by 20 -%}
+    {%- if customer.orders.size > 0 -%}
+      <table style="width:100%; border-collapse:collapse;">
+        <thead><tr>
+          <th style="text-align:left;padding:8px;">{{ 'customer.orders.order_number' | t }}</th>
+          <th style="text-align:left;padding:8px;">{{ 'customer.orders.date' | t }}</th>
+          <th style="text-align:left;padding:8px;">{{ 'customer.orders.total' | t }}</th>
+        </tr></thead>
+        <tbody>
+          {%- for order in customer.orders -%}
+            <tr style="border-top:1px solid var(--color-border);">
+              <td style="padding:8px;"><a href="{{ order.customer_url }}">{{ order.name }}</a></td>
+              <td style="padding:8px;">{{ order.created_at | date: '%d/%m/%Y' }}</td>
+              <td style="padding:8px;">{{ order.total_price | money }}</td>
+            </tr>
+          {%- endfor -%}
+        </tbody>
+      </table>
+    {%- else -%}
+      <p>{{ 'customer.orders.none' | t }}</p>
+    {%- endif -%}
+  {%- endpaginate -%}
+
+  <p style="margin-top:24px;"><a href="{{ routes.account_addresses_url }}">{{ 'customer.account.view_addresses' | t }}</a></p>
+</div></section>

@@ -1,0 +1,105 @@
+{%- comment -%} Pagina collezione: header + griglia prodotti con reveal e tilt {%- endcomment -%}
+{% style %}
+  .collection-{{ section.id }} .collection__banner {
+    text-align: center;
+    padding-block: clamp(40px, 6vw, 80px);
+  }
+  .collection-{{ section.id }} .collection__title { font-size: calc(clamp(2.2rem, 6vw, 4.4rem) * var(--font-heading-scale)); }
+  .collection-{{ section.id }} .collection__desc { color: var(--color-muted); max-width: 60ch; margin: 1em auto 0; }
+  .collection-{{ section.id }} .collection__toolbar {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .collection-{{ section.id }} .collection__toolbar select {
+    padding: 8px 12px; background: transparent; color: var(--color-text);
+    border: 1px solid var(--color-border); border-radius: var(--corner-radius); font: inherit;
+  }
+  .collection-{{ section.id }} .product-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+    gap: clamp(16px, 2vw, 28px);
+  }
+  @media (max-width: 989px) { .collection-{{ section.id }} .product-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 749px) { .collection-{{ section.id }} .product-grid { grid-template-columns: repeat(2, 1fr); } }
+  .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
+  .pagination a, .pagination span { padding: 8px 14px; border: 1px solid var(--color-border); border-radius: var(--corner-radius); }
+  .pagination .current { background: var(--color-accent); color: var(--color-accent-text); border-color: var(--color-accent); }
+{% endstyle %}
+
+<section class="collection-{{ section.id }} section-spacing">
+  <div class="page-width">
+    <div class="collection__banner">
+      <h1 class="collection__title" data-text-reveal data-reveal="word">{{ collection.title }}</h1>
+      {%- if collection.description != blank -%}
+        <div class="collection__desc rte" data-animate="fade">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="collection__toolbar">
+      <span class="text-muted" data-animate="fade">{{ collection.products_count }} prodotti</span>
+      <form method="get" class="collection__sort">
+        <label class="visually-hidden" for="SortBy">{{ 'products.facets.sort_by' | t }}</label>
+        <select name="sort_by" id="SortBy" onchange="this.form.submit()">
+          {%- assign sort_options = collection.sort_options -%}
+          {%- for option in sort_options -%}
+            <option value="{{ option.value }}" {% if option.value == collection.sort_by %}selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+      </form>
+    </div>
+
+    {% paginate collection.products by section.settings.products_per_page %}
+      <div class="product-grid">
+        {%- for product in collection.products -%}
+          {% render 'product-card', product: product, tilt: section.settings.enable_tilt, index: forloop.index0 %}
+        {%- else -%}
+          <p>{{ 'products.product.unavailable' | t }}</p>
+        {%- endfor -%}
+      </div>
+
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagination" aria-label="{{ 'general.pagination.previous' | t }}">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">{{ 'general.pagination.previous' | t }}</a>{%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+            {%- else -%}<span class="{% if part.title == paginate.current_page %}current{% endif %}">{{ part.title }}</span>{%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">{{ 'general.pagination.next' | t }}</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {% endpaginate %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collezione",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Colonne (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Prodotti per pagina",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_tilt",
+      "label": "Tilt 3D su hover (desktop)",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

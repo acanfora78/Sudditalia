@@ -1,0 +1,28 @@
+<section class="section-spacing"><div class="page-width" style="max-width:640px;">
+  <h1 data-animate>{{ 'customer.addresses.title' | t }}</h1>
+  <p><a href="{{ routes.account_url }}">&lsaquo; {{ 'customer.account.title' | t }}</a></p>
+
+  {%- form 'customer_address', customer.new_address, class: 'account-form' -%}
+    <h2>{{ 'customer.addresses.add_new' | t }}</h2>
+    <input type="text" name="address[first_name]" placeholder="{{ 'customer.addresses.first_name' | t }}" autocomplete="given-name">
+    <input type="text" name="address[last_name]" placeholder="{{ 'customer.addresses.last_name' | t }}" autocomplete="family-name">
+    <input type="text" name="address[address1]" placeholder="{{ 'customer.addresses.address1' | t }}" autocomplete="address-line1">
+    <input type="text" name="address[city]" placeholder="{{ 'customer.addresses.city' | t }}" autocomplete="address-level2">
+    <input type="text" name="address[zip]" placeholder="{{ 'customer.addresses.zip' | t }}" autocomplete="postal-code">
+    <input type="text" name="address[country]" placeholder="{{ 'customer.addresses.country' | t }}" autocomplete="country-name">
+    <button type="submit" class="btn" style="margin-top:12px;">{{ 'customer.addresses.add' | t }}</button>
+  {%- endform -%}
+
+  {%- for address in customer.addresses -%}
+    <div style="border:1px solid var(--color-border); border-radius:var(--corner-radius); padding:16px; margin-top:16px;">
+      {{ address | format_address }}
+      {%- form 'customer_address', address -%}
+        <button type="submit" class="btn btn--outline" style="margin-top:8px;">{{ 'customer.addresses.edit' | t }}</button>
+      {%- endform -%}
+    </div>
+  {%- endfor -%}
+</div></section>
+{% style %}
+  .account-form { display:flex; flex-direction:column; gap:8px; }
+  .account-form input { padding:12px 14px; background:transparent; color:var(--color-text); border:1px solid var(--color-border); border-radius:var(--corner-radius); font:inherit; }
+{% endstyle %}

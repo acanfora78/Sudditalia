@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_vendor": true,
+        "enable_zoom": true
+      }
+    },
+    "related": {
+      "type": "featured-collection",
+      "settings": {
+        "kicker": "Potrebbe piacerti",
+        "title": "Continua a esplorare",
+        "products_to_show": 4,
+        "columns": 4,
+        "enable_tilt": true
+      }
+    }
+  },
+  "order": [
+    "main",
+    "related"
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-parallax",
+      "settings": {
+        "kicker": "Nuovo drop",
+        "title": "Sudditalia",
+        "subtitle": "Streetwear dal Sud. Costruito un mattone alla volta.",
+        "button_label": "Scopri la collezione",
+        "height": 90,
+        "text_align": "center",
+        "overlay_opacity": 35
+      }
+    },
+    "marquee": {
+      "type": "marquee-ticker",
+      "blocks": {
+        "b1": {
+          "type": "item",
+          "settings": {
+            "text": "SUDDITALIA CLOTHING"
+          }
+        },
+        "b2": {
+          "type": "item",
+          "settings": {
+            "text": "STREETWEAR DAL SUD"
+          }
+        },
+        "b3": {
+          "type": "item",
+          "settings": {
+            "text": "NUOVO DROP"
+          }
+        },
+        "b4": {
+          "type": "item",
+          "settings": {
+            "text": "SPEDIZIONE GRATUITA"
+          }
+        }
+      },
+      "block_order": [
+        "b1",
+        "b2",
+        "b3",
+        "b4"
+      ]
+    },
+    "featured": {
+      "type": "featured-collection",
+      "settings": {
+        "kicker": "Shop",
+        "title": "In evidenza",
+        "products_to_show": 8,
+        "columns": 4,
+        "enable_tilt": true,
+        "view_all_label": "Vedi tutto"
+      }
+    },
+    "showcase": {
+      "type": "collection-showcase",
+      "settings": {
+        "image_ratio": "4 / 5"
+      },
+      "blocks": {
+        "r1": {
+          "type": "item",
+          "settings": {
+            "kicker": "In evidenza",
+            "title": "Nuova collezione",
+            "button_label": "Scopri"
+          }
+        },
+        "r2": {
+          "type": "item",
+          "settings": {
+            "kicker": "Sempre disponibili",
+            "title": "Essentials",
+            "button_label": "Shop"
+          }
+        }
+      },
+      "block_order": [
+        "r1",
+        "r2"
+      ]
+    },
+    "manifesto": {
+      "type": "manifesto-quote",
+      "settings": {
+        "kicker": "Il nostro manifesto",
+        "quote": "Costruiamo un grattacielo un mattone alla volta.",
+        "text_align": "center"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "featured",
+    "showcase",
+    "manifesto"
+  ]
+}

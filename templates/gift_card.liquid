@@ -1,0 +1,15 @@
+<section class="section-spacing" style="text-align:center; min-height:70vh; display:grid; place-items:center;">
+  <div class="page-width" style="max-width: 520px;">
+    <p class="text-muted">{{ shop.name }}</p>
+    {%- assign gc_value = gift_card.initial_value | money -%}
+    <h1>{{ 'gift_cards.issued.title' | t: value: gc_value, shop: shop.name }}</h1>
+    <div class="media" style="border-radius: var(--corner-radius); overflow:hidden; margin: 24px 0;">
+      {% render 'responsive-image', image: gift_card.product.featured_media.preview_image, sizes: '520px', widths: '400, 520, 800' %}
+    </div>
+    <p style="font-size:2rem; font-weight:700;">{{ gift_card.balance | money }}</p>
+    <div style="font-family: var(--font-heading-family); letter-spacing:.2em; font-size:1.4rem; padding:16px; border:1px dashed var(--color-border); border-radius: var(--corner-radius); margin: 16px 0;">
+      {{ gift_card.code | format_code }}
+    </div>
+    <a href="{{ shop.url }}" class="btn">{{ shop.name }}</a>
+  </div>
+</section>

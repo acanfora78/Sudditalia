@@ -1,0 +1,23 @@
+{%- comment -%} Articolo blog {%- endcomment -%}
+<article class="section-spacing">
+  <div class="page-width" style="max-width: 800px;">
+    <p class="text-muted" data-animate="fade">{{ article.published_at | date: '%d %B %Y' }}</p>
+    <h1 data-text-reveal data-reveal="word">{{ article.title }}</h1>
+    {%- if article.image -%}
+      <div class="media" style="border-radius: var(--corner-radius); overflow: hidden; margin: 24px 0;" data-animate="scale">
+        {% render 'responsive-image', image: article.image, sizes: '(max-width: 840px) 100vw, 800px', widths: '600, 800, 1200, 1600', loading: 'eager' %}
+      </div>
+    {%- endif -%}
+    <div class="rte" data-animate>{{ article.content }}</div>
+  </div>
+</article>
+
+{% schema %}
+{
+  "name": "Articolo",
+  "tag": "section",
+  "settings": [
+
+  ]
+}
+{% endschema %}
