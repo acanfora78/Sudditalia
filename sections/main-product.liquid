@@ -1,0 +1,198 @@
+{%- comment -%} Pagina prodotto: galleria 3D, zoom, varianti con feedback fluido {%- endcomment -%}
+{% style %}
+  .product-{{ section.id }} .product__layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(24px, 4vw, 64px);
+    align-items: start;
+  }
+  @media (max-width: 849px) { .product-{{ section.id }} .product__layout { grid-template-columns: 1fr; } }
+
+  .product-gallery { position: sticky; top: 100px; }
+  .product-gallery__stage {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: var(--corner-radius);
+    overflow: hidden;
+    background: var(--color-border);
+    perspective: 1200px;
+  }
+  .product-gallery__slide {
+    position: absolute; inset: 0;
+    opacity: 0;
+    transform: rotateY(12deg) scale(1.02);
+    transition: opacity var(--dur-base, .5s) var(--ease-out, ease), transform var(--dur-slow, .9s) var(--ease-out, ease);
+    pointer-events: none;
+  }
+  .product-gallery__slide.is-active { opacity: 1; transform: rotateY(0) scale(1); pointer-events: auto; }
+  html.no-3d .product-gallery__slide { transform: none; }
+  .product-gallery__stage[data-zoomable] { cursor: zoom-in; }
+  .product-gallery__thumbs { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .product-gallery__thumb {
+    width: 64px; aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+    border: 2px solid transparent; transition: border-color .2s, transform .2s;
+  }
+  .product-gallery__thumb.is-active { border-color: var(--color-accent); }
+  .product-gallery__thumb:hover { transform: translateY(-2px); }
+
+  .product__title { font-size: calc(clamp(2rem, 4vw, 3.2rem) * var(--font-heading-scale)); margin-bottom: .2em; }
+  .product__price { font-size: 1.5rem; font-weight: 700; margin-bottom: 1.2em; display: flex; gap: 12px; align-items: baseline; }
+  .product__price s { color: var(--color-muted); font-weight: 400; font-size: 1.1rem; }
+  .product__price .badge-sale { background: var(--color-accent); color: var(--color-accent-text); font-size: .8rem; padding: 3px 10px; border-radius: 999px; }
+
+  .variant-group { margin-bottom: 20px; }
+  .variant-group__label { display: block; font-weight: 600; margin-bottom: 8px; }
+  .variant-options { display: flex; flex-wrap: wrap; gap: 8px; }
+  .variant-swatch { position: relative; }
+  .variant-swatch input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .variant-swatch label {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 46px; padding: 10px 14px;
+    border: 1.5px solid var(--color-border); border-radius: var(--corner-radius);
+    cursor: pointer; transition: border-color .2s, background-color .2s, transform .15s, color .2s;
+  }
+  .variant-swatch input:checked + label { border-color: var(--color-accent); background: var(--color-accent); color: var(--color-accent-text); transform: translateY(-2px); }
+  .variant-swatch input:focus-visible + label { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+
+  .product__form .btn { width: 100%; margin-top: 8px; font-size: 1.1rem; padding-block: 1em; }
+  .product__form .btn[disabled] { opacity: .5; cursor: not-allowed; transform: none; }
+  .product__desc { margin-top: 28px; line-height: 1.7; }
+  .product__desc h1,.product__desc h2,.product__desc h3 { text-transform: none; }
+
+  /* Zoom lightbox */
+  .zoom-lightbox {
+    position: fixed; inset: 0; z-index: 9000; display: none;
+    background: rgba(0,0,0,.92); place-items: center; cursor: zoom-out;
+  }
+  .zoom-lightbox.is-open { display: grid; }
+  .zoom-lightbox img { max-width: 92vw; max-height: 92vh; border-radius: var(--corner-radius); }
+{% endstyle %}
+
+<section class="product-{{ section.id }} section-spacing" data-hero-unfold>
+  <div class="page-width">
+    <div class="product__layout">
+      {# --- Galleria --- #}
+      <div class="product-gallery" data-product-gallery>
+        <div class="product-gallery__stage" {% if section.settings.enable_zoom %}data-zoomable{% endif %} data-gallery-stage>
+          {%- for media in product.media -%}
+            <div class="product-gallery__slide {% if forloop.first %}is-active{% endif %}" data-slide="{{ forloop.index0 }}" data-full="{{ media.preview_image | image_url: width: 2000 }}">
+              {% render 'responsive-image',
+                 image: media.preview_image,
+                 sizes: '(max-width: 849px) 100vw, 55vw',
+                 widths: '540, 768, 1000, 1400, 1800',
+                 loading: forloop.first,
+                 alt: media.alt %}
+            </div>
+          {%- else -%}
+            <div class="product-gallery__slide is-active">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+          {%- endfor -%}
+        </div>
+
+        {%- if product.media.size > 1 -%}
+          <div class="product-gallery__thumbs" role="tablist" aria-label="Immagini prodotto">
+            {%- for media in product.media -%}
+              <button class="product-gallery__thumb media {% if forloop.first %}is-active{% endif %}" data-thumb="{{ forloop.index0 }}" role="tab" aria-selected="{{ forloop.first }}" aria-label="Immagine {{ forloop.index }}">
+                {% render 'responsive-image', image: media.preview_image, sizes: '64px', widths: '64, 128' %}
+              </button>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      {# --- Info & form --- #}
+      <div class="product__info">
+        {%- if section.settings.show_vendor and product.vendor != blank -%}
+          <p class="text-muted" data-animate="fade">{{ product.vendor }}</p>
+        {%- endif -%}
+        <h1 class="product__title" data-animate>{{ product.title }}</h1>
+
+        <div class="product__price" data-animate style="--i:1;" data-price>
+          <span data-price-current>{{ product.selected_or_first_available_variant.price | money }}</span>
+          {%- if product.compare_at_price > product.price -%}
+            <s data-price-compare>{{ product.compare_at_price | money }}</s>
+            <span class="badge-sale">{{ 'products.product.sale' | t }}</span>
+          {%- endif -%}
+        </div>
+
+        {%- form 'product', product, class: 'product__form', novalidate: 'novalidate', 'data-product-form': '' -%}
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="variant-group" data-animate style="--i:2;">
+                <span class="variant-group__label">{{ option.name }}</span>
+                <div class="variant-options">
+                  {%- for value in option.values -%}
+                    {%- assign opt_id = 'opt-' | append: section.id | append: '-' | append: forloop.parentloop.index | append: '-' | append: forloop.index -%}
+                    <span class="variant-swatch">
+                      <input
+                        type="radio"
+                        id="{{ opt_id }}"
+                        name="option{{ option.position }}"
+                        value="{{ value | escape }}"
+                        data-option-index="{{ option.position }}"
+                        {% if option.selected_value == value %}checked{% endif %}>
+                      <label for="{{ opt_id }}">{{ value }}</label>
+                    </span>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          {# JSON varianti per l'aggiornamento lato client #}
+          <script type="application/json" data-variants>
+            {{ product.variants | json }}
+          </script>
+
+          <select name="id" data-variant-select class="visually-hidden" aria-hidden="true" tabindex="-1">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}" {% if variant == product.selected_or_first_available_variant %}selected{% endif %} {% unless variant.available %}disabled{% endunless %}>
+                {{ variant.title }}
+              </option>
+            {%- endfor -%}
+          </select>
+
+          <button type="submit" name="add" class="btn" data-add-btn {% unless product.selected_or_first_available_variant.available %}disabled{% endunless %} data-animate style="--i:3;">
+            <span data-add-text>
+              {%- if product.selected_or_first_available_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </span>
+          </button>
+        {%- endform -%}
+
+        {%- if product.description != blank -%}
+          <div class="product__desc rte" data-animate>{{ product.description }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="zoom-lightbox" data-zoom-lightbox aria-hidden="true">
+  <img src="{{ product.featured_media.preview_image | image_url: width: 2000 }}" width="{{ product.featured_media.preview_image.width | default: 2000 }}" height="{{ product.featured_media.preview_image.height | default: 2000 }}" alt="{{ product.title | escape }}" loading="lazy" data-zoom-img>
+</div>
+
+<script src="{{ 'product-gallery.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Prodotto",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Mostra brand/vendor",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Zoom interattivo immagini",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
