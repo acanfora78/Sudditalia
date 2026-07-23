@@ -1,0 +1,61 @@
+{%- comment -%}
+  Card prodotto riutilizzabile.
+  Parametri:
+    product        (obbligatorio)
+    tilt           — true/false (tilt 3D su desktop)
+    index          — per ritardo animazione reveal
+{%- endcomment -%}
+{%- liquid
+  assign tilt = tilt | default: false
+  assign second = product.media[1]
+-%}
+
+<div
+  class="product-card {% if tilt %}tilt{% endif %}"
+  {% if tilt %}data-tilt{% endif %}
+  data-animate
+  style="--i: {{ index | default: 0 | modulo: 8 }};"
+>
+  <div class="tilt__inner">
+    <a href="{{ product.url }}" class="product-card__link" aria-label="{{ product.title | escape }}">
+      <div class="product-card__media media">
+        <div class="media__front">
+          {% render 'responsive-image',
+             image: product.featured_media.preview_image,
+             sizes: '(max-width: 749px) 50vw, 25vw',
+             widths: '300, 400, 540, 720',
+             alt: product.featured_media.alt %}
+        </div>
+        {%- if second != blank -%}
+          <div class="media__back" aria-hidden="true">
+            {% render 'responsive-image',
+               image: second.preview_image,
+               sizes: '(max-width: 749px) 50vw, 25vw',
+               widths: '300, 400, 540, 720',
+               alt: second.alt %}
+          </div>
+        {%- endif -%}
+
+        {%- if product.available == false -%}
+          <span class="product-card__badge product-card__badge--soldout">{{ 'products.product.sold_out' | t }}</span>
+        {%- elsif product.compare_at_price > product.price -%}
+          <span class="product-card__badge">{{ 'products.product.sale' | t }}</span>
+        {%- endif -%}
+      </div>
+
+      <div class="product-card__info">
+        <h3 class="product-card__title">{{ product.title }}</h3>
+        <div class="product-card__price">
+          {%- if product.price_varies -%}
+            {{ 'products.product.from_price' | t: price: product.price_min | money }}
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+          {%- if product.compare_at_price > product.price -%}
+            <s class="text-muted">{{ product.compare_at_price | money }}</s>
+          {%- endif -%}
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

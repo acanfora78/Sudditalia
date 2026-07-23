@@ -1,0 +1,195 @@
+{%- comment -%} Hero con parallax multi-livello e headline ad ingresso {%- endcomment -%}
+{% style %}
+  .hero-{{ section.id }} {
+    position: relative;
+    min-height: {{ section.settings.height }}vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    text-align: {{ section.settings.text_align }};
+    isolation: isolate;
+  }
+  .hero-{{ section.id }} .hero__bg {
+    position: absolute;
+    inset: -10% 0;
+    z-index: -3;
+  }
+  .hero-{{ section.id }} .hero__bg img {
+    width: 100%; height: 120%; object-fit: cover;
+  }
+  .hero-{{ section.id }} .hero__overlay {
+    position: absolute; inset: 0; z-index: -2;
+    background: linear-gradient(180deg, rgba(0,0,0,{{ section.settings.overlay_opacity | divided_by: 100.0 }}) 0%, rgba(0,0,0,{{ section.settings.overlay_opacity | plus: 15 | at_most: 100 | divided_by: 100.0 }}) 100%);
+  }
+  .hero-{{ section.id }} .hero__decor {
+    position: absolute; z-index: -1;
+    top: 8%; right: 6%;
+    width: min(40vw, 380px);
+    opacity: .9;
+    pointer-events: none;
+  }
+  .hero-{{ section.id }} .hero__content {
+    position: relative;
+    max-width: 42ch;
+    padding: clamp(24px, 5vw, 60px);
+    color: {{ section.settings.text_color }};
+  }
+  .hero-{{ section.id }} .hero__title {
+    font-size: calc(clamp(2.6rem, 8vw, 6rem) * var(--font-heading-scale));
+    line-height: .95;
+    margin-bottom: .3em;
+  }
+  .hero-{{ section.id }} .hero__subtitle { font-size: clamp(1rem, 2vw, 1.3rem); margin-bottom: 1.4em; opacity: .95; }
+  .hero-{{ section.id }} .hero__cta { display: inline-flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 749px) {
+    .hero-{{ section.id }} .hero__decor { width: 55vw; opacity: .5; }
+  }
+{% endstyle %}
+
+<section class="hero-{{ section.id }}" data-hero-unfold aria-label="{{ section.settings.title | escape }}">
+  {%- if section.settings.background_image != blank -%}
+    <div class="hero__bg" data-parallax="0.2">
+      {% render 'responsive-image', image: section.settings.background_image, sizes: '100vw', widths: '768, 1200, 1600, 2000, 2600', loading: 'eager', fetchpriority: 'high' %}
+    </div>
+  {%- endif -%}
+  <div class="hero__overlay"></div>
+
+  {%- if section.settings.decor_image != blank -%}
+    <div class="hero__decor" data-parallax="0.45">
+      {% render 'responsive-image', image: section.settings.decor_image, sizes: '380px', widths: '380, 640, 760' %}
+    </div>
+  {%- endif -%}
+
+  <div class="hero__content" data-parallax="-0.08">
+    {%- if section.settings.kicker != blank -%}
+      <p class="hero__kicker text-muted" data-animate="fade">{{ section.settings.kicker }}</p>
+    {%- endif -%}
+    {%- if section.settings.title != blank -%}
+      <h1 class="hero__title" data-text-reveal data-reveal="word">{{ section.settings.title }}</h1>
+    {%- endif -%}
+    {%- if section.settings.subtitle != blank -%}
+      <p class="hero__subtitle" data-animate style="--i: 2;">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+    <div class="hero__cta" data-animate style="--i: 3;">
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link }}" class="btn">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+      {%- if section.settings.button2_label != blank -%}
+        <a href="{{ section.settings.button2_link }}" class="btn btn--outline">{{ section.settings.button2_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Hero parallax",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "background_image",
+      "label": "Immagine di sfondo"
+    },
+    {
+      "type": "image_picker",
+      "id": "decor_image",
+      "label": "Elemento decorativo (parallax veloce)"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Occhiello",
+      "default": "Nuovo drop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Sudditalia"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Streetwear dal Sud. Costruito un mattone alla volta."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Bottone 1 — testo",
+      "default": "Scopri la collezione"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Bottone 1 — link"
+    },
+    {
+      "type": "text",
+      "id": "button2_label",
+      "label": "Bottone 2 — testo"
+    },
+    {
+      "type": "url",
+      "id": "button2_link",
+      "label": "Bottone 2 — link"
+    },
+    {
+      "type": "header",
+      "content": "Aspetto"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Altezza",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 90
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Allineamento testo",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        },
+        {
+          "value": "right",
+          "label": "Destra"
+        }
+      ]
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Opacità overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 35
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero parallax"
+    }
+  ]
+}
+{% endschema %}

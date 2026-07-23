@@ -1,0 +1,114 @@
+{%- comment -%} Sezione manifesto/quote con reveal progressivo allo scroll {%- endcomment -%}
+{% style %}
+  .manifesto-{{ section.id }} {
+    background: {{ section.settings.bg_color }};
+    color: {{ section.settings.text_color }};
+    text-align: {{ section.settings.text_align }};
+  }
+  .manifesto-{{ section.id }} .manifesto__inner {
+    max-width: {{ section.settings.max_width }}ch;
+    margin-inline: {% if section.settings.text_align == 'center' %}auto{% else %}0{% endif %};
+  }
+  .manifesto-{{ section.id }} .manifesto__kicker {
+    font-family: var(--font-heading-family);
+    text-transform: var(--heading-transform);
+    letter-spacing: .1em;
+    color: var(--color-accent);
+    margin-bottom: 1em;
+  }
+  .manifesto-{{ section.id }} .manifesto__quote {
+    font-family: var(--font-heading-family);
+    font-weight: var(--font-heading-weight);
+    text-transform: var(--heading-transform);
+    font-size: calc(clamp(1.8rem, 5vw, 3.6rem) * var(--font-heading-scale));
+    line-height: 1.1;
+  }
+  .manifesto-{{ section.id }} .manifesto__author { margin-top: 1.4em; color: var(--color-muted); font-style: italic; }
+{% endstyle %}
+
+<section class="manifesto-{{ section.id }} section-spacing" aria-label="Manifesto">
+  <div class="page-width">
+    <div class="manifesto__inner">
+      {%- if section.settings.kicker != blank -%}
+        <p class="manifesto__kicker" data-animate="fade">{{ section.settings.kicker }}</p>
+      {%- endif -%}
+      <blockquote class="manifesto__quote" data-text-reveal data-reveal="word">{{ section.settings.quote }}</blockquote>
+      {%- if section.settings.author != blank -%}
+        <p class="manifesto__author" data-animate="fade">— {{ section.settings.author }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Manifesto / Quote",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Occhiello",
+      "default": "Il nostro manifesto"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Testo",
+      "default": "Costruiamo un grattacielo un mattone alla volta."
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Autore / firma"
+    },
+    {
+      "type": "header",
+      "content": "Aspetto"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Sfondo",
+      "default": "#0e0e10"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Testo",
+      "default": "#f5f5f2"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Allineamento",
+      "default": "center",
+      "options": [
+        {
+          "value": "left",
+          "label": "Sinistra"
+        },
+        {
+          "value": "center",
+          "label": "Centro"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Larghezza testo",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "ch",
+      "default": 28
+    }
+  ],
+  "presets": [
+    {
+      "name": "Manifesto / Quote"
+    }
+  ]
+}
+{% endschema %}

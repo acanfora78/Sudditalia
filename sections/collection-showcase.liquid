@@ -1,0 +1,142 @@
+{%- comment -%} Editorial / collection showcase con parallax e testo sovrapposto {%- endcomment -%}
+{% style %}
+  .showcase-{{ section.id }} .showcase__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: clamp(24px, 5vw, 80px);
+  }
+  .showcase-{{ section.id }} .showcase__row.is-reversed { direction: rtl; }
+  .showcase-{{ section.id }} .showcase__row.is-reversed > * { direction: ltr; }
+  .showcase-{{ section.id }} .showcase__media {
+    position: relative;
+    aspect-ratio: {{ section.settings.image_ratio }};
+    border-radius: var(--corner-radius);
+    overflow: hidden;
+  }
+  .showcase-{{ section.id }} .showcase__media img { height: 118%; }
+  .showcase-{{ section.id }} .showcase__title {
+    font-size: calc(clamp(2rem, 5vw, 4rem) * var(--font-heading-scale));
+    line-height: 1;
+  }
+  .showcase-{{ section.id }} .showcase__text { color: var(--color-muted); margin-block: 1em 1.6em; }
+  @media (max-width: 749px) {
+    .showcase-{{ section.id }} .showcase__row,
+    .showcase-{{ section.id }} .showcase__row.is-reversed { grid-template-columns: 1fr; direction: ltr; }
+  }
+{% endstyle %}
+
+<section class="showcase-{{ section.id }} section-spacing">
+  <div class="page-width">
+    {%- for block in section.blocks -%}
+      <div class="showcase__row {% cycle '', 'is-reversed' %}" style="margin-bottom: var(--spacing-sections);" {{ block.shopify_attributes }}>
+        <div class="showcase__media media" data-animate="scale">
+          {% render 'responsive-image', image: block.settings.image, sizes: '(max-width: 749px) 100vw, 50vw', widths: '540, 768, 1000, 1400' %}
+        </div>
+        <div class="showcase__content">
+          {%- if block.settings.kicker != blank -%}<p class="text-muted" data-animate="fade">{{ block.settings.kicker }}</p>{%- endif -%}
+          <h2 class="showcase__title" data-text-reveal data-reveal="word">{{ block.settings.title }}</h2>
+          {%- if block.settings.text != blank -%}<div class="showcase__text rte" data-animate>{{ block.settings.text }}</div>{%- endif -%}
+          {%- if block.settings.button_label != blank -%}
+            <a href="{{ block.settings.button_link }}" class="btn btn--outline" data-animate style="--i:2;">{{ block.settings.button_label }}</a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection showcase",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporzioni immagine",
+      "default": "4 / 5",
+      "options": [
+        {
+          "value": "1 / 1",
+          "label": "Quadrata"
+        },
+        {
+          "value": "4 / 5",
+          "label": "Verticale"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Ritratto"
+        },
+        {
+          "value": "16 / 10",
+          "label": "Panoramica"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Riga editoriale",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "kicker",
+          "label": "Occhiello"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo",
+          "default": "La collezione"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Testo"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Bottone"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Link bottone"
+        }
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "item",
+        "settings": {
+          "title": "Nuova collezione",
+          "kicker": "In evidenza"
+        }
+      },
+      {
+        "type": "item",
+        "settings": {
+          "title": "Essentials",
+          "kicker": "Sempre disponibili"
+        }
+      }
+    ]
+  },
+  "presets": [
+    {
+      "name": "Collection showcase"
+    }
+  ]
+}
+{% endschema %}

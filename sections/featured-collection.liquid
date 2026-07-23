@@ -1,0 +1,117 @@
+{%- comment -%} Griglia prodotti in evidenza con card tilt 3D + reveal on-scroll {%- endcomment -%}
+{%- liquid
+  assign collection = collections[section.settings.collection]
+  assign limit = section.settings.products_to_show
+-%}
+
+{% style %}
+  .featured-{{ section.id }} .featured__head {
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 16px;
+    margin-bottom: clamp(20px, 3vw, 40px); flex-wrap: wrap;
+  }
+  .featured-{{ section.id }} .featured__title { font-size: calc(clamp(1.8rem, 4vw, 3rem) * var(--font-heading-scale)); }
+  .featured-{{ section.id }} .product-grid {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.columns }}, 1fr);
+    gap: clamp(16px, 2vw, 28px);
+  }
+  @media (max-width: 989px) { .featured-{{ section.id }} .product-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 749px) { .featured-{{ section.id }} .product-grid { grid-template-columns: repeat(2, 1fr); } }
+{% endstyle %}
+
+<section class="featured-{{ section.id }} section-spacing">
+  <div class="page-width">
+    <div class="featured__head">
+      <div>
+        {%- if section.settings.kicker != blank -%}<p class="text-muted" data-animate="fade">{{ section.settings.kicker }}</p>{%- endif -%}
+        {%- if section.settings.title != blank -%}<h2 class="featured__title" data-animate>{{ section.settings.title }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.view_all_link != blank -%}
+        <a href="{{ section.settings.view_all_link }}" class="btn btn--ghost" data-animate>{{ section.settings.view_all_label }} {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="product-grid">
+      {%- if collection.products.size > 0 -%}
+        {%- for product in collection.products limit: limit -%}
+          {% render 'product-card', product: product, tilt: section.settings.enable_tilt, index: forloop.index0 %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..limit) -%}
+          <div class="product-card" data-animate style="--i: {{ forloop.index0 | modulo: 8 }};">
+            <div class="product-card__media media">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+            <div class="product-card__info">
+              <h3 class="product-card__title">{{ 'products.product.unavailable' | t }}</h3>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Griglia prodotti",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Occhiello",
+      "default": "Shop"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "In evidenza"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collezione"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Prodotti da mostrare",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Colonne (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_tilt",
+      "label": "Tilt 3D su hover (desktop)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "Testo 'vedi tutti'",
+      "default": "Vedi tutto"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "Link 'vedi tutti'"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Griglia prodotti"
+    }
+  ]
+}
+{% endschema %}
