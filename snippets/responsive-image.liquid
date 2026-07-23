@@ -1,0 +1,43 @@
+{%- comment -%}
+  Snippet immagine responsive con srcset, dimensioni esplicite (no CLS) e lazy load.
+
+  Parametri:
+    image     (obbligatorio) — oggetto immagine Shopify
+    sizes     — attributo sizes (default: 100vw)
+    widths    — lista larghezze srcset (default set)
+    class     — classe CSS aggiuntiva
+    loading   — 'lazy' (default) o 'eager'
+    fetchpriority — opzionale ('high' per LCP)
+    alt       — override testo alternativo
+{%- endcomment -%}
+
+{%- liquid
+  assign img = image
+  assign sizes = sizes | default: '100vw'
+  assign loading = loading | default: 'lazy'
+  assign widths = widths | default: '320, 480, 640, 768, 960, 1200, 1600, 2000'
+  assign alt_text = alt | default: img.alt | escape
+-%}
+
+{%- if img != blank -%}
+  <img
+    src="{{ img | image_url: width: 960 }}"
+    srcset="
+      {%- assign width_list = widths | split: ',' -%}
+      {%- for w in width_list -%}
+        {%- assign wt = w | strip -%}
+        {{ img | image_url: width: wt }} {{ wt }}w{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}"
+    sizes="{{ sizes }}"
+    width="{{ img.width }}"
+    height="{{ img.height }}"
+    alt="{{ alt_text }}"
+    loading="{{ loading }}"
+    {% if fetchpriority %}fetchpriority="{{ fetchpriority }}"{% endif %}
+    decoding="async"
+    {% if class %}class="{{ class }}"{% endif %}>
+{%- else -%}
+  <div class="media placeholder-media {{ class }}" style="aspect-ratio: 1;">
+    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+  </div>
+{%- endif -%}

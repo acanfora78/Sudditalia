@@ -1,0 +1,150 @@
+{
+  "general": {
+    "accessibility": {
+      "skip_to_content": "Salta al contenuto",
+      "close": "Chiudi",
+      "menu": "Menu",
+      "previous": "Precedente",
+      "next": "Avanti",
+      "loading": "Caricamento..."
+    },
+    "meta": {
+      "tags": "Con tag {{ tags }}",
+      "page": "Pagina {{ page }}"
+    },
+    "pagination": {
+      "previous": "Precedente",
+      "next": "Successivo"
+    },
+    "search": {
+      "placeholder": "Cerca...",
+      "submit": "Cerca",
+      "no_results": "Nessun risultato per \"{{ terms }}\"."
+    },
+    "newsletter": {
+      "label": "Email",
+      "placeholder": "La tua email",
+      "submit": "Iscriviti"
+    }
+  },
+  "sections": {
+    "header": {
+      "menu": "Menu",
+      "cart": "Carrello",
+      "search": "Cerca",
+      "account": "Account"
+    },
+    "intro": {
+      "cta_default": "Clicca sullo squalo per entrare",
+      "aria_enter": "Entra nel sito",
+      "skip": "Salta introduzione"
+    },
+    "footer": {
+      "newsletter_title": "Resta nel branco",
+      "newsletter_text": "Iscriviti per drop, anteprime e sconti.",
+      "newsletter_success": "Sei dentro. Benvenuto nel branco.",
+      "follow_us": "Seguici",
+      "copyright": "Tutti i diritti riservati."
+    }
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Aggiungi al carrello",
+      "added_to_cart": "Aggiunto al carrello",
+      "sold_out": "Esaurito",
+      "unavailable": "Non disponibile",
+      "on_sale": "In offerta",
+      "from_price": "da {{ price }}",
+      "quantity": "Quantità",
+      "view_details": "Vedi dettagli",
+      "sale": "Saldo"
+    },
+    "facets": {
+      "filter": "Filtra",
+      "sort_by": "Ordina per",
+      "clear": "Cancella"
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Il tuo carrello",
+      "empty": "Il carrello è vuoto",
+      "subtotal": "Subtotale",
+      "checkout": "Vai al checkout",
+      "remove": "Rimuovi",
+      "continue_shopping": "Continua lo shopping"
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Ecco la tua gift card da {{ value }} per {{ shop }}!"
+    }
+  },
+  "customer": {
+    "log_out": "Esci",
+    "login": {
+      "title": "Accedi",
+      "email": "Email",
+      "password": "Password",
+      "sign_in": "Accedi",
+      "forgot_password": "Password dimenticata?",
+      "create_account": "Crea un account"
+    },
+    "recover_password": {
+      "title": "Recupera password",
+      "email": "Email",
+      "submit": "Invia"
+    },
+    "register": {
+      "title": "Crea account",
+      "first_name": "Nome",
+      "last_name": "Cognome",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Crea"
+    },
+    "reset_password": {
+      "title": "Reimposta password",
+      "password": "Nuova password",
+      "password_confirmation": "Conferma password",
+      "submit": "Reimposta"
+    },
+    "activate_account": {
+      "title": "Attiva account",
+      "subtext": "Crea la tua password per attivare l'account.",
+      "password": "Password",
+      "password_confirmation": "Conferma password",
+      "submit": "Attiva account",
+      "cancel": "Rifiuta invito"
+    },
+    "account": {
+      "title": "Il mio account",
+      "view_addresses": "Vedi indirizzi"
+    },
+    "orders": {
+      "title": "Ordini",
+      "order_number": "Ordine",
+      "date": "Data",
+      "total": "Totale",
+      "none": "Non hai ancora effettuato ordini."
+    },
+    "order": {
+      "title": "Ordine {{ name }}",
+      "product": "Prodotto",
+      "quantity": "Quantità",
+      "total": "Totale"
+    },
+    "addresses": {
+      "title": "Indirizzi",
+      "add_new": "Aggiungi un nuovo indirizzo",
+      "first_name": "Nome",
+      "last_name": "Cognome",
+      "address1": "Indirizzo",
+      "city": "Città",
+      "zip": "CAP",
+      "country": "Paese",
+      "add": "Aggiungi",
+      "edit": "Modifica"
+    }
+  }
+}

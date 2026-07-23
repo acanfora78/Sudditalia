@@ -1,0 +1,27 @@
+# Configurazione Theme Check per "Sudditalia Clothing"
+# https://shopify.dev/docs/themes/tools/theme-check
+
+root: "."
+
+extends: :default
+
+ignore:
+  - node_modules/
+
+# Regole disabilitate consapevolmente:
+#  - Il tema usa JS/CSS custom inline in alcune sezioni per l'intro signature.
+AssetSizeJavaScript:
+  enabled: true
+  threshold_in_bytes: 20000
+
+AssetSizeCSS:
+  enabled: true
+  threshold_in_bytes: 100000
+
+# Consentiamo <img> costruite via snippet responsive-image (già ottimizzate).
+ImgLazyLoading:
+  enabled: true
+
+# L'intro usa sessionStorage: nessun problema di parser richiesto.
+ParserBlockingScriptTag:
+  enabled: true

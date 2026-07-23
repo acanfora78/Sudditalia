@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.color_accent -%}
+      <meta name="theme-color" content="{{ settings.color_accent }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}{% if current_tags %} &ndash; {{ 'general.meta.tags' | t: tags: current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    {# --- Performance: preconnect ai font store di Shopify --- #}
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.shopify.com">
+
+    {# --- Font (font_picker nativo Shopify) con font-display: swap --- #}
+    {%- assign font_heading = settings.font_heading -%}
+    {%- assign font_body = settings.font_body -%}
+    {{ font_heading | font_face: font_display: 'swap' }}
+    {{ font_heading | font_modify: 'weight', 'bolder' | font_face: font_display: 'swap' }}
+    {{ font_body | font_face: font_display: 'swap' }}
+    {{ font_body | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+    {# --- Variabili CSS globali dal Theme Editor --- #}
+    {% style %}
+      :root {
+        --color-bg: {{ settings.color_bg }};
+        --color-text: {{ settings.color_text }};
+        --color-accent: {{ settings.color_accent }};
+        --color-accent-text: {{ settings.color_accent_text }};
+        --color-muted: {{ settings.color_muted }};
+        --color-border: {{ settings.color_border }};
+        --gradient-accent: {{ settings.gradient_accent }};
+
+        --font-heading-family: {{ font_heading.family }}, {{ font_heading.fallback_families }};
+        --font-heading-weight: {{ font_heading.weight }};
+        --font-body-family: {{ font_body.family }}, {{ font_body.fallback_families }};
+        --font-body-weight: {{ font_body.weight }};
+        --font-body-size: {{ settings.font_body_size }}px;
+        --font-heading-scale: {{ settings.font_heading_scale | divided_by: 100.0 }};
+        --heading-transform: {% if settings.heading_uppercase %}uppercase{% else %}none{% endif %};
+
+        --page-width: {{ settings.page_width }}px;
+        --spacing-sections: {{ settings.spacing_sections }}px;
+        --corner-radius: {{ settings.corner_radius }}px;
+
+        --anim-speed: {{ settings.animation_speed | divided_by: 100.0 }};
+        --anim-intensity: {{ settings.animation_intensity | divided_by: 100.0 }};
+      }
+    {% endstyle %}
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'animations.css' | asset_url | stylesheet_tag }}
+
+    {# --- Flag JS globali per gli script --- #}
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.SudditaliaTheme = {
+        animations: {{ settings.animations_enabled | json }},
+        enable3d: {{ settings.enable_3d | json }},
+        customCursor: {{ settings.custom_cursor_enabled | json }},
+        speed: {{ settings.animation_speed | divided_by: 100.0 | json }},
+        intensity: {{ settings.animation_intensity | divided_by: 100.0 | json }},
+        strings: {
+          added: {{ 'products.product.added_to_cart' | t | json }},
+          subscribed: {{ 'sections.footer.newsletter_success' | t | json }}
+        }
+      };
+    </script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ request.page_type | handle }}">
+    <a class="skip-link" href="#MainContent">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {# --- Intro signature: overlay 3D "inghiottito dallo squalo" --- #}
+    {% section 'intro-shark' %}
+
+    {% section 'header' %}
+
+    <main id="MainContent" class="content-for-layout" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% section 'footer' %}
+
+    {# --- Cursore personalizzato (montato solo se abilitato e non touch) --- #}
+    <div class="custom-cursor" data-custom-cursor aria-hidden="true" hidden>
+      <span class="custom-cursor__dot"></span>
+      <span class="custom-cursor__ring"></span>
+    </div>
+
+    {# --- Script core (defer, non blocca il render) --- #}
+    <script src="{{ 'theme.js' | asset_url }}" defer></script>
+    {% if settings.animations_enabled %}
+      <script src="{{ 'parallax.js' | asset_url }}" defer></script>
+      <script src="{{ 'text-reveal.js' | asset_url }}" defer></script>
+      <script src="{{ 'product-card.js' | asset_url }}" defer></script>
+    {% endif %}
+    {% if settings.custom_cursor_enabled %}
+      <script src="{{ 'custom-cursor.js' | asset_url }}" defer></script>
+    {% endif %}
+  </body>
+</html>

@@ -1,0 +1,14 @@
+# Shopify
+.shopify/
+*.zip
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Node (solo se in futuro si aggiunge un build step)
+node_modules/
+npm-debug.log*

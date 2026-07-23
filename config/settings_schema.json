@@ -1,0 +1,224 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Sudditalia Clothing",
+    "theme_author": "Sudditalia",
+    "theme_version": "1.0.0",
+    "theme_documentation_url": "https://github.com/acanfora78/sudditalia",
+    "theme_support_url": "https://github.com/acanfora78/sudditalia/issues"
+  },
+  {
+    "name": "Colori",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Palette brand"
+      },
+      {
+        "type": "color",
+        "id": "color_bg",
+        "label": "Sfondo pagina",
+        "default": "#0e0e10"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Testo",
+        "default": "#f5f5f2"
+      },
+      {
+        "type": "color",
+        "id": "color_accent",
+        "label": "Accento",
+        "default": "#f2a900",
+        "info": "Colore giallo/oro brand (usato per bottoni e hover)."
+      },
+      {
+        "type": "color",
+        "id": "color_accent_text",
+        "label": "Testo su accento",
+        "default": "#0e0e10"
+      },
+      {
+        "type": "color",
+        "id": "color_muted",
+        "label": "Testo secondario",
+        "default": "#9a9a94"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Bordi",
+        "default": "#2a2a2e"
+      },
+      {
+        "type": "color_background",
+        "id": "gradient_accent",
+        "label": "Gradiente accento (opzionale)",
+        "default": "linear-gradient(135deg, #f2a900 0%, #ff6a00 100%)"
+      }
+    ]
+  },
+  {
+    "name": "Tipografia",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Font"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Font titoli (display)",
+        "default": "assistant_n4",
+        "info": "Suggerito uno stile condensed/bold streetwear (es. Oswald, Archivo Black)."
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Font testo",
+        "default": "assistant_n4"
+      },
+      {
+        "type": "range",
+        "id": "font_heading_scale",
+        "label": "Scala titoli",
+        "min": 100,
+        "max": 160,
+        "step": 5,
+        "unit": "%",
+        "default": 120
+      },
+      {
+        "type": "range",
+        "id": "font_body_size",
+        "label": "Dimensione testo base",
+        "min": 14,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "checkbox",
+        "id": "heading_uppercase",
+        "label": "Titoli in MAIUSCOLO",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "page_width",
+        "label": "Larghezza massima contenuto",
+        "min": 1200,
+        "max": 1800,
+        "step": 20,
+        "unit": "px",
+        "default": 1400
+      },
+      {
+        "type": "range",
+        "id": "spacing_sections",
+        "label": "Spazio verticale tra sezioni",
+        "min": 0,
+        "max": 120,
+        "step": 4,
+        "unit": "px",
+        "default": 64
+      },
+      {
+        "type": "range",
+        "id": "corner_radius",
+        "label": "Raggio angoli",
+        "min": 0,
+        "max": 32,
+        "step": 2,
+        "unit": "px",
+        "default": 8
+      }
+    ]
+  },
+  {
+    "name": "Animazioni & 3D",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Controllo globale delle animazioni. Le impostazioni per-sezione restano indipendenti; questo è l'interruttore generale."
+      },
+      {
+        "type": "checkbox",
+        "id": "animations_enabled",
+        "label": "Abilita animazioni",
+        "default": true,
+        "info": "Se disattivato, il tema mostra una versione statica ovunque (utile per 'modalità leggera')."
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_3d",
+        "label": "Abilita effetti 3D (tilt, parallax, galleria)",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "animation_speed",
+        "label": "Velocità animazioni",
+        "min": 50,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "default": 100,
+        "info": "100% = velocità di default. Valori più bassi = animazioni più lente."
+      },
+      {
+        "type": "range",
+        "id": "animation_intensity",
+        "label": "Intensità effetti 3D",
+        "min": 25,
+        "max": 150,
+        "step": 5,
+        "unit": "%",
+        "default": 100
+      },
+      {
+        "type": "header",
+        "content": "Cursore personalizzato"
+      },
+      {
+        "type": "checkbox",
+        "id": "custom_cursor_enabled",
+        "label": "Cursore personalizzato (solo desktop)",
+        "default": false,
+        "info": "Reagisce agli elementi interattivi. Disattivato di default per accessibilità."
+      }
+    ]
+  },
+  {
+    "name": "Social",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook (URL)"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube (URL)"
+      }
+    ]
+  }
+]

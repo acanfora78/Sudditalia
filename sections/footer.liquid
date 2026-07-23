@@ -1,0 +1,162 @@
+{%- comment -%} Footer con social micro-hover e newsletter con feedback animato {%- endcomment -%}
+{% style %}
+  .site-footer { border-top: 1px solid var(--color-border); margin-top: var(--spacing-sections); }
+  .footer__grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: clamp(24px, 4vw, 64px);
+    padding-block: clamp(40px, 6vw, 72px);
+  }
+  @media (max-width: 749px) { .footer__grid { grid-template-columns: 1fr; } }
+  .footer__brand h3 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: .3em; }
+  .footer__tagline { color: var(--color-muted); max-width: 34ch; }
+  .footer__col-title { font-family: var(--font-heading-family); text-transform: var(--heading-transform); font-size: 1rem; letter-spacing: .06em; margin-bottom: 14px; color: var(--color-muted); }
+  .footer__links a { display: block; padding: 6px 0; transition: color .2s, transform .2s; }
+  .footer__links a:hover { color: var(--color-accent); transform: translateX(4px); }
+  .footer__social { display: flex; gap: 12px; margin-top: 18px; }
+  .footer__social a {
+    display: inline-flex; padding: 10px; border: 1px solid var(--color-border); border-radius: 50%;
+    transition: transform .25s var(--ease-out, ease), background-color .25s, color .25s, border-color .25s;
+  }
+  .footer__social a:hover { transform: translateY(-4px) rotate(6deg); background: var(--color-accent); color: var(--color-accent-text); border-color: var(--color-accent); }
+  .footer__social svg { width: 20px; height: 20px; }
+  .newsletter-form { position: relative; display: flex; gap: 8px; margin-top: 14px; max-width: 380px; }
+  .newsletter-form input[type="email"] {
+    flex: 1; padding: 12px 14px; background: transparent; color: var(--color-text);
+    border: 1px solid var(--color-border); border-radius: var(--corner-radius); font: inherit;
+  }
+  .newsletter-form input[type="email"]:focus { outline: none; border-color: var(--color-accent); }
+  .newsletter-form .btn { padding-inline: 1.2em; }
+  .newsletter-form.is-submitting .btn { opacity: .6; pointer-events: none; }
+  .newsletter-success {
+    display: flex; align-items: center; gap: 8px; margin-top: 12px; color: var(--color-accent);
+    font-weight: 600; opacity: 0; transform: translateY(6px);
+    transition: opacity .4s var(--ease-out, ease), transform .4s var(--ease-out, ease);
+  }
+  .newsletter-success.is-visible { opacity: 1; transform: translateY(0); }
+  .footer__bottom {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    padding-block: 20px; border-top: 1px solid var(--color-border);
+    color: var(--color-muted); font-size: .9rem;
+  }
+{% endstyle %}
+
+<footer class="site-footer" role="contentinfo">
+  <div class="page-width footer__grid">
+    <div class="footer__brand" data-animate>
+      {%- if section.settings.heading != blank -%}
+        <h3>{{ section.settings.heading }}</h3>
+      {%- else -%}
+        <h3>{{ shop.name }}</h3>
+      {%- endif -%}
+      {%- if section.settings.tagline != blank -%}
+        <p class="footer__tagline">{{ section.settings.tagline }}</p>
+      {%- endif -%}
+
+      {%- assign has_social = false -%}
+      {%- if settings.social_instagram != blank or settings.social_tiktok != blank or settings.social_facebook != blank or settings.social_youtube != blank -%}
+        {%- assign has_social = true -%}
+      {%- endif -%}
+      {%- if has_social -%}
+        <div class="footer__social" aria-label="{{ 'sections.footer.follow_us' | t }}">
+          {%- if settings.social_instagram != blank -%}<a href="{{ settings.social_instagram }}" aria-label="Instagram" rel="noopener" target="_blank">{% render 'icon', name: 'instagram' %}</a>{%- endif -%}
+          {%- if settings.social_tiktok != blank -%}<a href="{{ settings.social_tiktok }}" aria-label="TikTok" rel="noopener" target="_blank">{% render 'icon', name: 'tiktok' %}</a>{%- endif -%}
+          {%- if settings.social_facebook != blank -%}<a href="{{ settings.social_facebook }}" aria-label="Facebook" rel="noopener" target="_blank">{% render 'icon', name: 'facebook' %}</a>{%- endif -%}
+          {%- if settings.social_youtube != blank -%}<a href="{{ settings.social_youtube }}" aria-label="YouTube" rel="noopener" target="_blank">{% render 'icon', name: 'youtube' %}</a>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- for block in section.blocks -%}
+      {%- if block.type == 'menu' and block.settings.menu != blank -%}
+        <div class="footer__col" data-animate {{ block.shopify_attributes }}>
+          <div class="footer__col-title">{{ block.settings.title }}</div>
+          <nav class="footer__links" aria-label="{{ block.settings.title }}">
+            {%- for link in block.settings.menu.links -%}
+              <a href="{{ link.url }}">{{ link.title }}</a>
+            {%- endfor -%}
+          </nav>
+        </div>
+      {%- elsif block.type == 'newsletter' -%}
+        <div class="footer__col" data-animate {{ block.shopify_attributes }}>
+          <div class="footer__col-title">{{ 'sections.footer.newsletter_title' | t }}</div>
+          <p class="text-muted">{{ 'sections.footer.newsletter_text' | t }}</p>
+          {%- form 'customer', class: 'newsletter-form', 'data-newsletter': 'true' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <label class="visually-hidden" for="NewsletterEmail">{{ 'general.newsletter.label' | t }}</label>
+            <input type="email" id="NewsletterEmail" name="contact[email]" placeholder="{{ 'general.newsletter.placeholder' | t }}" required autocomplete="email">
+            <button type="submit" class="btn" name="commit">{{ 'general.newsletter.submit' | t }}</button>
+            {%- if form.posted_successfully? -%}
+              <script>document.addEventListener('DOMContentLoaded',function(){var s=document.querySelector('[data-newsletter-success]');if(s)s.classList.add('is-visible');});</script>
+            {%- endif -%}
+          {%- endform -%}
+          <div class="newsletter-success" data-newsletter-success role="status">
+            {% render 'icon', name: 'arrow' %} {{ 'sections.footer.newsletter_success' | t }}
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <div class="page-width footer__bottom">
+    <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'sections.footer.copyright' | t }}</span>
+    <span>{{ powered_by_link }}</span>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Titolo brand",
+      "default": "Sudditalia Clothing"
+    },
+    {
+      "type": "textarea",
+      "id": "tagline",
+      "label": "Tagline",
+      "default": "Streetwear dal Sud. Un mattone alla volta."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Colonna menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titolo colonna",
+          "default": "Naviga"
+        },
+        {
+          "type": "link_list",
+          "id": "menu",
+          "label": "Menu"
+        }
+      ]
+    },
+    {
+      "type": "newsletter",
+      "name": "Newsletter",
+      "limit": 1,
+      "settings": [
+
+      ]
+    }
+  ],
+  "default": {
+    "blocks": [
+      {
+        "type": "menu"
+      },
+      {
+        "type": "newsletter"
+      }
+    ]
+  }
+}
+{% endschema %}

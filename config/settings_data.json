@@ -1,0 +1,42 @@
+{
+  "current": {
+    "color_bg": "#0e0e10",
+    "color_text": "#f5f5f2",
+    "color_accent": "#f2a900",
+    "color_accent_text": "#0e0e10",
+    "color_muted": "#9a9a94",
+    "color_border": "#2a2a2e",
+    "gradient_accent": "linear-gradient(135deg, #f2a900 0%, #ff6a00 100%)",
+    "font_heading": "assistant_n7",
+    "font_body": "assistant_n4",
+    "font_heading_scale": 120,
+    "font_body_size": 16,
+    "heading_uppercase": true,
+    "page_width": 1400,
+    "spacing_sections": 64,
+    "corner_radius": 8,
+    "animations_enabled": true,
+    "enable_3d": true,
+    "animation_speed": 100,
+    "animation_intensity": 100,
+    "custom_cursor_enabled": false,
+    "social_instagram": "",
+    "social_tiktok": "",
+    "social_facebook": "",
+    "social_youtube": ""
+  },
+  "presets": {
+    "Sudditalia": {
+      "color_bg": "#0e0e10",
+      "color_text": "#f5f5f2",
+      "color_accent": "#f2a900",
+      "color_accent_text": "#0e0e10",
+      "color_muted": "#9a9a94",
+      "color_border": "#2a2a2e",
+      "font_heading": "assistant_n7",
+      "font_body": "assistant_n4",
+      "animations_enabled": true,
+      "enable_3d": true
+    }
+  }
+}
