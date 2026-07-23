@@ -1,0 +1,217 @@
+{%- comment -%}
+  ⭐ Sezione signature: intro "inghiottito dallo squalo".
+  Overlay fullscreen mostrato una sola volta per sessione (sessionStorage).
+  Graceful degradation: senza JS, un <noscript> nasconde l'overlay così il sito resta accessibile.
+{%- endcomment -%}
+
+{%- liquid
+  assign enabled = section.settings.enabled
+  assign bg1 = section.settings.bg_color
+  assign bg2 = section.settings.bg_color_edge
+  assign maw = section.settings.mouth_color
+-%}
+
+{%- if enabled -%}
+  {% style %}
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 45%, {{ bg1 }} 0%, {{ bg2 }} 100%);
+      perspective: 1000px;
+      overflow: hidden;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .intro-overlay[hidden] { display: none; }
+    .intro-overlay__inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(20px, 4vh, 48px);
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .intro-shark {
+      width: min(60vw, 460px);
+      max-width: 78vw;
+      filter: drop-shadow(0 24px 48px rgba(0,0,0,.35));
+      animation: shark-bob 3.4s ease-in-out infinite;
+      will-change: transform;
+      transform-origin: center 60%;
+    }
+    .intro-shark img, .intro-shark svg { width: 100%; height: auto; }
+    .intro-cta {
+      font-family: var(--font-heading-family);
+      font-weight: var(--font-heading-weight);
+      text-transform: var(--heading-transform);
+      color: {{ section.settings.cta_color }};
+      font-size: clamp(1rem, 2.6vw, 1.6rem);
+      letter-spacing: .04em;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0,0,0,.25);
+      animation: intro-cta-pulse 2.2s ease-in-out infinite;
+    }
+    @keyframes intro-cta-pulse { 0%,100% { opacity: .8; } 50% { opacity: 1; } }
+    /* Overlay che scurisce verso "l'interno della bocca" durante l'inghiottimento */
+    .intro-mouth {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, {{ maw }} 0%, #060402 70%, #000 100%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .5s ease;
+    }
+    .intro-skip {
+      position: absolute;
+      bottom: 20px; right: 20px;
+      color: {{ section.settings.cta_color }};
+      opacity: .7;
+      font-size: .85rem;
+      padding: 8px 14px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: rgba(0,0,0,.15);
+    }
+    .intro-skip:hover { opacity: 1; }
+
+    /* --- Sequenza di inghiottimento --- */
+    .intro-overlay.is-swallowing { cursor: default; }
+    .intro-overlay.is-swallowing .intro-shark {
+      animation: none;
+      transform: translateZ(600px) scale(3.4);
+      transition: transform 1s cubic-bezier(.6,.02,.2,1);
+    }
+    .intro-overlay.is-swallowing .intro-cta { opacity: 0; transition: opacity .25s ease; }
+    .intro-overlay.is-swallowing .intro-mouth { opacity: 1; }
+    .intro-overlay.is-blackout { background: #000; }
+    .intro-overlay.is-blackout .intro-shark { opacity: 0; transition: opacity .3s ease; }
+    .intro-overlay.is-fading-out { opacity: 0; transition: opacity .5s ease; }
+
+    /* prefers-reduced-motion: versione statica con semplice dissolvenza */
+    @media (prefers-reduced-motion: reduce) {
+      .intro-shark { animation: none; }
+      .intro-cta { animation: none; }
+      .intro-overlay.is-swallowing .intro-shark { transition: none; transform: none; }
+      .intro-overlay.is-swallowing .intro-mouth { transition: opacity .2s ease; }
+    }
+    html.no-animations .intro-shark,
+    html.no-animations .intro-cta { animation: none; }
+  {% endstyle %}
+
+  <div
+    class="intro-overlay"
+    data-intro
+    data-intro-duration="{{ section.settings.duration }}"
+    role="button"
+    tabindex="0"
+    aria-label="{{ 'sections.intro.aria_enter' | t }}"
+    hidden
+  >
+    <div class="intro-overlay__inner" data-intro-inner>
+      <div class="intro-shark" data-intro-shark>
+        {%- if section.settings.shark_image != blank -%}
+          {% render 'responsive-image', image: section.settings.shark_image, sizes: '(max-width: 600px) 78vw, 460px', widths: '320, 460, 640, 920', loading: 'eager', alt: shop.name %}
+        {%- else -%}
+          <img src="{{ 'shark-logo-placeholder.svg' | asset_url }}" width="640" height="400" alt="{{ shop.name }}" loading="eager">
+        {%- endif -%}
+      </div>
+      {%- if section.settings.cta_text != blank -%}
+        <p class="intro-cta">{{ section.settings.cta_text }}</p>
+      {%- endif -%}
+    </div>
+    <div class="intro-mouth" aria-hidden="true"></div>
+    <button type="button" class="intro-skip" data-intro-skip>{{ 'sections.intro.skip' | t }}</button>
+  </div>
+
+  {%- comment -%} Senza JS l'overlay resta hidden: il sito è subito accessibile. {%- endcomment -%}
+  <script>
+    (function () {
+      var el = document.querySelector('[data-intro]');
+      if (!el) return;
+      // Mostra l'intro solo se non già vista in questa sessione
+      try {
+        if (!sessionStorage.getItem('sudditalia_intro_seen')) {
+          el.hidden = false;
+          document.body.classList.add('intro-active');
+        }
+      } catch (e) { /* sessionStorage non disponibile: intro resta nascosta */ }
+    })();
+  </script>
+  <script src="{{ 'intro-shark.js' | asset_url }}" defer></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Intro Squalo",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Overlay d'ingresso 3D mostrato una volta per sessione. L'utente clicca sullo squalo per 'essere inghiottito' ed entrare nel sito."
+    },
+    {
+      "type": "checkbox",
+      "id": "enabled",
+      "label": "Attiva intro",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "shark_image",
+      "label": "Immagine squalo",
+      "info": "Se vuoto usa il placeholder incluso nel tema."
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "Testo invito",
+      "default": "Clicca sullo squalo per entrare"
+    },
+    {
+      "type": "header",
+      "content": "Colori"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Sfondo (centro)",
+      "default": "#4FB6E8"
+    },
+    {
+      "type": "color",
+      "id": "bg_color_edge",
+      "label": "Sfondo (bordi)",
+      "default": "#1C5C82"
+    },
+    {
+      "type": "color",
+      "id": "mouth_color",
+      "label": "Colore 'bocca' (inghiottimento)",
+      "default": "#5a140c",
+      "info": "Buio caldo/rossastro suggestivo durante l'inghiottimento."
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "Colore testo invito",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Tempistica"
+    },
+    {
+      "type": "range",
+      "id": "duration",
+      "label": "Durata sequenza",
+      "min": 1200,
+      "max": 2400,
+      "step": 100,
+      "unit": "ms",
+      "default": 1600
+    }
+  ]
+}
+{% endschema %}
