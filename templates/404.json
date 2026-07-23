@@ -1,10 +1,39 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
-      "type": "main-404"
+      "type": "main-404",
+      "disabled": true,
+      "settings": {
+        "text": "Questa pagina è stata inghiottita. Torna in superficie.",
+        "button_label": "Torna alla home"
+      }
+    },
+    "featured_collection_LVKhdm": {
+      "type": "featured-collection",
+      "name": "Griglia prodotti",
+      "settings": {
+        "kicker": "Shop",
+        "title": "In evidenza",
+        "collection": "",
+        "products_to_show": 8,
+        "columns": 4,
+        "enable_tilt": true,
+        "view_all_label": "Vedi tutto",
+        "view_all_link": ""
+      }
     }
   },
   "order": [
-    "main"
+    "main",
+    "featured_collection_LVKhdm"
   ]
 }

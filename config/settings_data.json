@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "current": {
     "color_bg": "#0e0e10",
@@ -23,7 +32,57 @@
     "social_instagram": "",
     "social_tiktok": "",
     "social_facebook": "",
-    "social_youtube": ""
+    "social_youtube": "",
+    "sections": {
+      "intro-shark": {
+        "type": "intro-shark",
+        "settings": {
+          "enabled": true,
+          "shark_image": "shopify://shop_images/ChatGPT_Image_23_lug_2026_16_22_03.png",
+          "cta_text": "TOCCA LO SQUALO PER ENTRARE!",
+          "bg_color": "#4fb6e8",
+          "bg_color_edge": "#1c5c82",
+          "mouth_color": "#5a140c",
+          "cta_color": "#ffffff",
+          "duration": 1600
+        }
+      },
+      "header": {
+        "type": "header",
+        "settings": {
+          "logo_height": 40,
+          "menu": "main-menu",
+          "height": 76,
+          "transparent_on_top": true,
+          "show_search": true
+        }
+      },
+      "footer": {
+        "type": "footer",
+        "blocks": {
+          "footer-0": {
+            "type": "menu",
+            "settings": {
+              "title": "Naviga",
+              "menu": ""
+            }
+          },
+          "footer-1": {
+            "type": "newsletter",
+            "settings": {}
+          }
+        },
+        "block_order": [
+          "footer-0",
+          "footer-1"
+        ],
+        "settings": {
+          "heading": "Sudditalia Clothing",
+          "tagline": "Streetwear dal Sud. Un mattone alla volta."
+        }
+      }
+    },
+    "content_for_index": []
   },
   "presets": {
     "Sudditalia": {
