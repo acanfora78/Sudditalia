@@ -1,6 +1,10 @@
 {%- comment -%}
-  ⭐ Sezione signature: intro "inghiottito dallo squalo".
+  ⭐ Sezione signature: intro "Sudditalia" — fondale marino 3D con squalo.
   Overlay fullscreen mostrato una sola volta per sessione (sessionStorage).
+  Esperienza WebGL (Three.js via CDN) con fallback automatico e progressivo
+  a una sequenza 2D CSS quando WebGL non è disponibile, l'utente richiede
+  animazioni ridotte, o il CDN non risponde: il 2D è mostrato da subito e
+  il 3D lo sostituisce solo quando è pronto, senza mai un flash vuoto.
   Graceful degradation: senza JS, un <noscript> nasconde l'overlay così il sito resta accessibile.
 {%- endcomment -%}
 
@@ -9,6 +13,8 @@
   assign bg1 = section.settings.bg_color
   assign bg2 = section.settings.bg_color_edge
   assign maw = section.settings.mouth_color
+  assign shark_color = section.settings.shark_color | default: '#232f3d'
+  assign accent_color = section.settings.accent_color | default: settings.color_accent | default: '#f2a900'
 -%}
 
 {%- if enabled -%}
@@ -19,28 +25,58 @@
       z-index: 10000;
       display: grid;
       place-items: center;
-      background: radial-gradient(circle at 50% 45%, {{ bg1 }} 0%, {{ bg2 }} 100%);
+      background: radial-gradient(circle at 50% 40%, {{ bg1 }} 0%, {{ bg2 }} 100%);
       perspective: 1000px;
       overflow: hidden;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
     .intro-overlay[hidden] { display: none; }
+
+    .intro-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      opacity: 0;
+      transition: opacity .9s ease;
+    }
+    .intro-overlay.is-3d .intro-canvas { opacity: 1; }
+
     .intro-overlay__inner {
+      position: relative;
+      z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: clamp(20px, 4vh, 48px);
       transform-style: preserve-3d;
       will-change: transform;
+      transition: opacity .5s ease, transform .6s ease;
     }
+    /* In modalità 3D lo squalo vive nel canvas: l'immagine 2D sfuma via e
+       l'invito si sposta in basso per non coprire il muso dello squalo. */
+    .intro-overlay.is-3d .intro-shark {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .intro-overlay.is-3d .intro-overlay__inner {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(32px, 9vh, 96px);
+      transform: translateX(-50%);
+      gap: 14px;
+    }
+
     .intro-shark {
       width: min(60vw, 460px);
       max-width: 78vw;
       filter: drop-shadow(0 24px 48px rgba(0,0,0,.35));
       animation: shark-bob 3.4s ease-in-out infinite;
-      will-change: transform;
+      will-change: transform, opacity;
       transform-origin: center 60%;
+      transition: opacity .6s ease;
     }
     .intro-shark img, .intro-shark svg { width: 100%; height: auto; }
     .intro-cta {
@@ -49,23 +85,25 @@
       text-transform: var(--heading-transform);
       color: {{ section.settings.cta_color }};
       font-size: clamp(1rem, 2.6vw, 1.6rem);
-      letter-spacing: .04em;
+      letter-spacing: .1em;
       text-align: center;
-      text-shadow: 0 2px 10px rgba(0,0,0,.25);
+      text-shadow: 0 2px 14px rgba(0,0,0,.4);
       animation: intro-cta-pulse 2.2s ease-in-out infinite;
     }
-    @keyframes intro-cta-pulse { 0%,100% { opacity: .8; } 50% { opacity: 1; } }
-    /* Overlay che scurisce verso "l'interno della bocca" durante l'inghiottimento */
+    @keyframes intro-cta-pulse { 0%,100% { opacity: .82; } 50% { opacity: 1; } }
+    /* Overlay che scurisce verso "l'interno della bocca" durante l'ingresso */
     .intro-mouth {
       position: absolute;
       inset: 0;
+      z-index: 3;
       background: radial-gradient(circle at 50% 50%, {{ maw }} 0%, #060402 70%, #000 100%);
       opacity: 0;
       pointer-events: none;
-      transition: opacity .5s ease;
+      transition: opacity .6s ease;
     }
     .intro-skip {
       position: absolute;
+      z-index: 4;
       bottom: 20px; right: 20px;
       color: {{ section.settings.cta_color }};
       opacity: .7;
@@ -77,9 +115,9 @@
     }
     .intro-skip:hover { opacity: 1; }
 
-    /* --- Sequenza di inghiottimento --- */
+    /* --- Sequenza di ingresso (percorso 2D classico) --- */
     .intro-overlay.is-swallowing { cursor: default; }
-    .intro-overlay.is-swallowing .intro-shark {
+    .intro-overlay:not(.is-3d).is-swallowing .intro-shark {
       animation: none;
       transform: translateZ(600px) scale(3.4);
       transition: transform 1s cubic-bezier(.6,.02,.2,1);
@@ -87,7 +125,8 @@
     .intro-overlay.is-swallowing .intro-cta { opacity: 0; transition: opacity .25s ease; }
     .intro-overlay.is-swallowing .intro-mouth { opacity: 1; }
     .intro-overlay.is-blackout { background: #000; }
-    .intro-overlay.is-blackout .intro-shark { opacity: 0; transition: opacity .3s ease; }
+    .intro-overlay.is-blackout .intro-shark,
+    .intro-overlay.is-blackout .intro-canvas { opacity: 0; transition: opacity .3s ease; }
     .intro-overlay.is-fading-out { opacity: 0; transition: opacity .5s ease; }
 
     /* prefers-reduced-motion: versione statica con semplice dissolvenza */
@@ -105,11 +144,16 @@
     class="intro-overlay"
     data-intro
     data-intro-duration="{{ section.settings.duration }}"
+    data-webgl="{{ section.settings.enable_webgl | json }}"
+    data-module-url="{{ 'intro-shark-3d.js' | asset_url }}"
+    data-shark-color="{{ shark_color }}"
+    data-accent-color="{{ accent_color }}"
     role="button"
     tabindex="0"
     aria-label="{{ 'sections.intro.aria_enter' | t }}"
     hidden
   >
+    <canvas class="intro-canvas" data-intro-canvas aria-hidden="true"></canvas>
     <div class="intro-overlay__inner" data-intro-inner>
       <div class="intro-shark" data-intro-shark>
         {%- if section.settings.shark_image != blank -%}
@@ -149,7 +193,7 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Overlay d'ingresso 3D mostrato una volta per sessione. L'utente clicca sullo squalo per 'essere inghiottito' ed entrare nel sito."
+      "content": "Overlay d'ingresso mostrato una volta per sessione: fondale marino 3D (WebGL) con fallback automatico a una versione 2D leggera. L'utente clicca/tocca per entrare nel sito."
     },
     {
       "type": "checkbox",
@@ -160,37 +204,62 @@
     {
       "type": "image_picker",
       "id": "shark_image",
-      "label": "Immagine squalo",
-      "info": "Se vuoto usa il placeholder incluso nel tema."
+      "label": "Immagine squalo (2D / fallback)",
+      "info": "Usata come esperienza di base sempre visibile e come fallback se il browser non supporta WebGL. Se vuoto usa il placeholder incluso nel tema."
     },
     {
       "type": "text",
       "id": "cta_text",
       "label": "Testo invito",
-      "default": "Clicca sullo squalo per entrare"
+      "default": "DIVE INTO SUDDITALIA",
+      "info": "Alternative suggerite: \"ENTER SUDDITALIA\", \"WELCOME TO THE SOUTH\"."
     },
     {
       "type": "header",
-      "content": "Colori"
+      "content": "Esperienza 3D"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_webgl",
+      "label": "Attiva esperienza 3D (WebGL)",
+      "default": true,
+      "info": "Squalo e fondale marino animati in tempo reale. Se il dispositivo non supporta WebGL (o l'utente ha richiesto animazioni ridotte), il tema mostra automaticamente la versione 2D — nessuna configurazione necessaria."
+    },
+    {
+      "type": "color",
+      "id": "shark_color",
+      "label": "Colore squalo (pelle denim)",
+      "default": "#232f3d"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Colore accento (oro / bagliore)",
+      "default": "#f2a900",
+      "info": "Usato per il contorno luminoso dello squalo, i raggi di luce e le particelle. Se vuoto usa l'accento del tema."
+    },
+    {
+      "type": "header",
+      "content": "Colori (fondale)"
     },
     {
       "type": "color",
       "id": "bg_color",
-      "label": "Sfondo (centro)",
-      "default": "#4FB6E8"
+      "label": "Acqua (centro, dove filtra la luce)",
+      "default": "#134b63"
     },
     {
       "type": "color",
       "id": "bg_color_edge",
-      "label": "Sfondo (bordi)",
-      "default": "#1C5C82"
+      "label": "Acqua (bordi, profondità)",
+      "default": "#01050a"
     },
     {
       "type": "color",
       "id": "mouth_color",
-      "label": "Colore 'bocca' (inghiottimento)",
+      "label": "Colore dissolvenza in ingresso",
       "default": "#5a140c",
-      "info": "Buio caldo/rossastro suggestivo durante l'inghiottimento."
+      "info": "Tono caldo e scuro usato nell'istante prima del buio, quando si entra nel mondo Sudditalia."
     },
     {
       "type": "color",
@@ -205,12 +274,12 @@
     {
       "type": "range",
       "id": "duration",
-      "label": "Durata sequenza",
-      "min": 1200,
-      "max": 2400,
+      "label": "Durata sequenza d'ingresso",
+      "min": 1400,
+      "max": 3600,
       "step": 100,
       "unit": "ms",
-      "default": 1600
+      "default": 2200
     }
   ]
 }

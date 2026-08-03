@@ -39,12 +39,15 @@
         "settings": {
           "enabled": true,
           "shark_image": "shopify://shop_images/ChatGPT_Image_23_lug_2026_16_22_03.png",
-          "cta_text": "TOCCA LO SQUALO PER ENTRARE!",
-          "bg_color": "#4fb6e8",
-          "bg_color_edge": "#1c5c82",
+          "cta_text": "DIVE INTO SUDDITALIA",
+          "enable_webgl": true,
+          "shark_color": "#232f3d",
+          "accent_color": "#f2a900",
+          "bg_color": "#134b63",
+          "bg_color_edge": "#01050a",
           "mouth_color": "#5a140c",
           "cta_color": "#ffffff",
-          "duration": 1600
+          "duration": 2200
         }
       },
       "header": {
