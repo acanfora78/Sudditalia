@@ -3,14 +3,14 @@
 Tema **Shopify Online Store 2.0** per il brand streetwear italiano **Sudditalia Clothing**.
 Costruito in **Liquid + HTML + CSS + vanilla JS** — nessun framework, nessun build step obbligatorio.
 
-Identità visiva "stramovimentata": intro 3D signature, parallax multi-livello, tilt 3D sulle card,
+Identità visiva da campagna: intro cinematografica WebGL, parallax multi-livello, tilt 3D sulle card,
 reveal on-scroll e micro-interazioni curate — il tutto senza sacrificare performance e accessibilità.
 
 ---
 
 ## ✨ Caratteristiche
 
-- **Intro signature "Sudditalia"** — fondale marino 3D in WebGL (Three.js) con uno squalo low-poly che nuota, respira, segue il cursore e "inghiotte" la camera per rivelare l'homepage. Overlay a schermo intero, una volta per sessione, con fallback automatico e progressivo a una versione 2D se WebGL non è disponibile.
+- **Intro cinematografica "APNEA"** — immersione WebGL a schermo intero: acqua profonda, coni di luce volumetrici, caustiche e particolato, con uno squalo che emerge dall'ombra, respira, segue il cursore e affonda verso l'obiettivo per rivelare l'homepage. Una volta per sessione, con fermo immagine graduato come fallback automatico.
 - **Parallax multi-livello** su hero e sezioni editoriali.
 - **Card prodotto con tilt 3D** (desktop) e crossfade fronte/retro all'hover.
 - **Galleria prodotto 3D** con zoom e selezione varianti fluida.
@@ -53,15 +53,14 @@ reveal on-scroll e micro-interazioni curate — il tutto senza sacrificare perfo
 
 | Asset | Dove si cambia |
 |-------|----------------|
-| **Immagine squalo (2D / fallback)** | Theme Editor → sezione *Intro Squalo* → *Immagine squalo*. È l'esperienza mostrata da subito (prima che il 3D sia pronto) e il fallback se WebGL non è disponibile. Se lasciato vuoto usa `assets/shark-logo-placeholder.svg`. |
-| **Colori squalo 3D** | Theme Editor → *Intro Squalo* → *Esperienza 3D*: colore pelle (denim) e colore accento (oro/bagliore). Lo squalo 3D è generato via codice (nessun file 3D da sostituire). |
+| **Squalo dell'intro** | Nessun asset da sostituire: la mesh è generata via codice. Per passare a un modello fotorealistico, carica un `.glb` in *Impostazioni → File* e incolla il link in Theme Editor → *Intro cinematografica → Modello GLB*. |
+| **Colori dell'intro** | Theme Editor → *Intro cinematografica → Palette*: acqua, luce, accento (oro), pelle, testo. |
 | **Logo header** | Theme Editor → *Header* → *Logo*. Se vuoto mostra il nome del negozio in stile display. |
 | **Font** | Theme Editor → *Impostazioni tema → Tipografia*. Usa il selettore font nativo di Shopify (titoli + testo). Suggeriti font condensed/bold per i titoli. |
 | **Colori** | Theme Editor → *Impostazioni tema → Colori*. Default brand: sfondo scuro `#0e0e10`, accento giallo/oro `#f2a900`. |
 | **Immagini hero / editoriali / prodotti** | Impostabili per-sezione nel Theme Editor. |
 
-Per usare un logo diverso senza passare dal Theme Editor, sostituisci il file
-`assets/shark-logo-placeholder.svg` mantenendo lo stesso nome (o carica un PNG/SVG e collegalo dalla sezione Intro).
+L'intro non usa immagini: se ti serve un logo altrove, impostalo da *Header → Logo*.
 
 ---
 
@@ -78,15 +77,26 @@ Per usare un logo diverso senza passare dal Theme Editor, sostituisci il file
   - `Cursore personalizzato` (desktop, off di default).
 - **Social** — URL Instagram, TikTok, Facebook, YouTube.
 
-### Sezione Intro Squalo (signature)
-- Attiva/disattiva l'intro.
-- Immagine squalo 2D (esperienza di base e fallback), testo invito (default `DIVE INTO SUDDITALIA`, alternative suggerite `ENTER SUDDITALIA` / `WELCOME TO THE SOUTH`).
-- **Esperienza 3D**: attiva/disattiva WebGL, colore squalo (denim), colore accento (oro).
-- Colore acqua centro/bordi (default blu oceano profondo `#134b63` → `#01050a`).
-- Colore dissolvenza in ingresso (buio caldo `#5a140c`).
-- Colore testo, durata sequenza (1400–3600 ms).
+### Sezione Intro cinematografica (signature)
+- Attiva/disattiva l'intro; wordmark e testo dell'invito (default `DIVE INTO SUDDITALIA`, alternative `ENTER SUDDITALIA` / `WELCOME TO THE SOUTH`).
+- **Scena 3D**: attiva/disattiva WebGL, audio all'ingresso, URL di un modello GLB opzionale.
+- **Palette**: acqua profonda, luce, accento oro, pelle, testo.
+- **Tempi**: quando compare l'invito (default 4500 ms) e durata dell'affondo (default 2200 ms).
 
-**Come funziona il 3D**: lo squalo è generato interamente via codice (nessun modello/textura da caricare) come mesh low-poly sfaccettata, in una scena Three.js caricata da CDN solo quando serve. Il canvas è trasparente e sta sopra il gradiente CSS del fondale, così i colori restano sempre quelli impostati nel Theme Editor. L'esperienza 2D è mostrata da subito (nessuna attesa, nessun flash vuoto); se WebGL è disponibile e il caricamento va a buon fine, sfuma dolcemente nella scena 3D. Se il browser non supporta WebGL, l'utente ha richiesto animazioni ridotte (`prefers-reduced-motion`), o il fetch di three.js fallisce, il tema resta semplicemente sulla versione 2D — **nessuna configurazione richiesta**. Su dispositivi meno performanti (viewport ridotta, poca memoria/CPU) il numero di particelle e raggi di luce si riduce automaticamente per restare fluido.
+**Concept.** Il principio è la sottrazione: lo schermo resta quasi nero e lo squalo non è mai
+illuminato del tutto — si legge perché *occlude* i coni di luce, e la foschia esponenziale lo
+dissolve nel nulla a distanza. La sequenza è in otto battute: nero → la luce si risolve dal buio →
+qualcosa interrompe il fascio → il fianco taglia un raggio → resta a osservare (respira, muove le
+pinne, segue il cursore) → compare l'invito → all'affondo la bocca si apre e il frame si riempie →
+nero, e dalla completa oscurità riemerge l'homepage.
+
+**Come funziona.** Tutto è procedurale: corpo (loft anatomico con ondulazione di nuoto nel vertex
+shader), pinne, coni volumetrici, caustiche e particolato — nessun modello né texture da scaricare.
+La catena di post-processing è scritta a mano (bright-pass → blur → composizione con distorsione
+barile, aberrazione cromatica, grana e vignettatura): è ciò che dà il caratteristico "girato con un
+obiettivo". Se imposti un URL GLB, il modello sostituisce la mesh procedurale mantenendo identiche
+regia e sequenza. L'audio (fiotto d'acqua + sub) è **sintetizzato con Web Audio**: nessun file da
+caricare, nessuna licenza, e parte sul click — che è un gesto utente, quindi non viene bloccato.
 
 ### Altre sezioni
 Header, Hero parallax, Griglia prodotti, Collection showcase, Manifesto/Quote, Marquee ticker,
@@ -97,9 +107,12 @@ immagini, toggle animazioni).
 
 ## ♿ Accessibilità e performance
 
-- **`prefers-reduced-motion`**: chi lo richiede vede versioni statiche / dissolvenze semplici al posto delle animazioni 3D (l'intro salta direttamente il percorso WebGL).
-- **Fallback WebGL automatico**: nessun canvas, nessun errore visibile e nessun blocco se il browser/dispositivo non supporta WebGL — resta l'esperienza 2D, già completa.
-- **Dipendenza esterna**: `assets/intro-shark-3d.js` importa `three.js` da CDN (`unpkg.com`) solo quando l'intro 3D è ammissibile, così il peso extra non tocca mai il resto del sito né i visitatori che vedono la sola versione 2D. Per un ambiente completamente offline/air-gapped, è possibile disattivare l'esperienza 3D dal Theme Editor (*Intro Squalo → Esperienza 3D*) oppure vendorizzare il file `three.module.js` in `assets/` e aggiornare l'URL importato in `intro-shark-3d.js`.
+- **`prefers-reduced-motion`**: chi lo richiede salta del tutto il percorso WebGL e l'audio, e vede il fermo immagine con dissolvenze semplici.
+- **Fallback automatico**: se WebGL manca, il renderer è software (SwiftShader/llvmpipe, che girerebbe a pochi fps) o il modulo non si carica, resta il **fermo immagine graduato in CSS** — nero, coni di luce sfumati, vignettatura. È una composizione finita, non un errore, e l'utente può sempre entrare.
+- **LCP e TBT**: la prima immagine è puro CSS e compare istantaneamente; three.js e la compilazione degli shader partono **dopo l'evento `load`** (in `requestIdleCallback`), quindi non entrano nel Total Blocking Time. L'attesa non è tempo morto: la prima battuta del concept è comunque schermo nero.
+- **Tier adattivi**: densità della mesh, particelle, numero di coni, risoluzione di rendering e bloom si riducono automaticamente su viewport piccole o dispositivi con poca memoria/CPU.
+- **Teardown completo**: a fine intro geometrie, materiali, render target e contesto WebGL vengono liberati (`loseContext`), così l'homepage gira pulita.
+- **Nessuna dipendenza esterna a runtime**: `three.module.js` è **vendorizzato in `assets/`** e risolto con un `<script type="importmap">`. Niente origini di terze parti, niente problemi di CSP, e la cache è quella del CDN Shopify. Viene scaricato solo quando l'intro 3D è ammissibile e una sola volta per sessione.
 - **Modalità leggera**: disattiva tutte le animazioni da *Impostazioni tema → Animazioni & 3D*.
 - **Mobile-first**: gli effetti hover (tilt) sono rimpiazzati da reveal on-scroll su touch; parallax degradato.
 - **Senza JavaScript**: il contenuto resta accessibile e navigabile. L'intro **non** blocca l'accesso
@@ -115,14 +128,16 @@ immagini, toggle animazioni).
 config/          settings_schema.json, settings_data.json
 layout/          theme.liquid, password.liquid
 locales/         it.default.json
-sections/        intro-shark, header, footer, hero-parallax, featured-collection,
+sections/        intro-cinematic, header, footer, hero-parallax, featured-collection,
                  collection-showcase, manifesto-quote, marquee-ticker, main-product,
                  main-collection, main-cart, main-*, rich-text
 snippets/        product-card, responsive-image, icon, meta-tags
 templates/       *.json (OS 2.0) + customers/*.liquid + gift_card.liquid
-assets/          base.css, animations.css, theme.js, intro-shark.js, intro-shark-3d.js,
+assets/          base.css, animations.css, theme.js,
+                 intro-cinematic.js, intro-cinematic-3d.js,
+                 three.module.js, GLTFLoader.js, BufferGeometryUtils.js  (vendorizzati)
                  parallax.js, text-reveal.js, product-card.js, product-gallery.js,
-                 custom-cursor.js, shark-logo-placeholder.svg
+                 custom-cursor.js
 ```
 
 ---

@@ -136,26 +136,38 @@
 }
 
 /* --------------------------------------------------------------------------
-   Idle bob (logo squalo intro)
+   Emersione dell'hero dopo l'intro cinematografica.
+   La homepage non "compare": riemerge dal nero. Scala che rientra da 1.06,
+   sfocatura che si risolve — l'ultimo frame dell'intro e il primo dell'hero
+   sono entrambi neri, quindi la cucitura non si vede.
    -------------------------------------------------------------------------- */
-@keyframes shark-bob {
-  0%, 100% { transform: translateY(0) rotate(-1.2deg); }
-  50% { transform: translateY(-14px) rotate(1.2deg); }
-}
-
-/* Emersione hero dopo l'intro */
-@keyframes hero-unfold {
+@keyframes hero-surface {
   from {
     opacity: 0;
-    transform: perspective(1200px) rotateX(8deg) scale(1.08);
+    transform: scale(1.06);
+    filter: blur(14px);
+  }
+  60% {
+    opacity: 1;
   }
   to {
     opacity: 1;
-    transform: perspective(1200px) rotateX(0) scale(1);
+    transform: scale(1);
+    filter: blur(0);
   }
 }
 .intro-just-finished [data-hero-unfold] {
-  animation: hero-unfold var(--dur-slow) var(--ease-out) both;
+  animation: hero-surface 1.9s cubic-bezier(.16,1,.3,1) both;
+}
+
+/* Il resto della pagina sale con un ritardo minimo: dà profondità al reveal. */
+@keyframes hero-lift {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.intro-just-finished .content-for-layout > *:not([data-hero-unfold]),
+.intro-just-finished .site-header {
+  animation: hero-lift 1.2s cubic-bezier(.16,1,.3,1) .35s both;
 }
 
 /* --------------------------------------------------------------------------

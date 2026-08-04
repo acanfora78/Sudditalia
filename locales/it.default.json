@@ -35,9 +35,9 @@
       "account": "Account"
     },
     "intro": {
-      "cta_default": "Clicca sullo squalo per entrare",
-      "aria_enter": "Entra nel sito",
-      "skip": "Salta introduzione"
+      "cta_default": "Dive into Sudditalia",
+      "aria_enter": "Entra nel mondo Sudditalia",
+      "skip": "Salta"
     },
     "footer": {
       "newsletter_title": "Resta nel branco",

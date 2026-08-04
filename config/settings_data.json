@@ -34,20 +34,22 @@
     "social_facebook": "",
     "social_youtube": "",
     "sections": {
-      "intro-shark": {
-        "type": "intro-shark",
+      "intro-cinematic": {
+        "type": "intro-cinematic",
         "settings": {
           "enabled": true,
-          "shark_image": "shopify://shop_images/ChatGPT_Image_23_lug_2026_16_22_03.png",
+          "wordmark": "SUDDITALIA",
           "cta_text": "DIVE INTO SUDDITALIA",
           "enable_webgl": true,
-          "shark_color": "#232f3d",
+          "enable_audio": true,
+          "model_url": "",
+          "water_color": "#05070a",
+          "light_color": "#cfe6f2",
           "accent_color": "#f2a900",
-          "bg_color": "#134b63",
-          "bg_color_edge": "#01050a",
-          "mouth_color": "#5a140c",
-          "cta_color": "#ffffff",
-          "duration": 2200
+          "shark_color": "#1a2028",
+          "text_color": "#e8e6e1",
+          "reveal_at": 4500,
+          "enter_duration": 2200
         }
       },
       "header": {
