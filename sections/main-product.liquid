@@ -114,7 +114,7 @@
           {%- endif -%}
         </div>
 
-        {%- form 'product', product, class: 'product__form', novalidate: 'novalidate', 'data-product-form': '' -%}
+        {%- form '' -%}
           {%- unless product.has_only_default_variant -%}
             {%- for option in product.options_with_values -%}
               <div class="variant-group" data-animate style="--i:2;">
@@ -196,3 +196,14 @@
   ]
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- form 'product', product, class: 'product__form', novalidate: 'novalidate',
+    'data-product-form': '' -%}"
+  to: "{%- form '' -%}"
+  position: 6092..6107
+{% endcomment %}

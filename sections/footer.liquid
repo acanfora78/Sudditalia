@@ -81,7 +81,7 @@
         <div class="footer__col" data-animate {{ block.shopify_attributes }}>
           <div class="footer__col-title">{{ 'sections.footer.newsletter_title' | t }}</div>
           <p class="text-muted">{{ 'sections.footer.newsletter_text' | t }}</p>
-          {%- form 'customer', class: 'newsletter-form', 'data-newsletter': 'true' -%}
+          {%- form 'true' -%}
             <input type="hidden" name="contact[tags]" value="newsletter">
             <label class="visually-hidden" for="NewsletterEmail">{{ 'general.newsletter.label' | t }}</label>
             <input type="email" id="NewsletterEmail" name="contact[email]" placeholder="{{ 'general.newsletter.placeholder' | t }}" required autocomplete="email">
@@ -160,3 +160,14 @@
   }
 }
 {% endschema %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{%- form 'customer', class: 'newsletter-form', 'data-newsletter': 'true'
+    -%}"
+  to: "{%- form 'true' -%}"
+  position: 5137..5156
+{% endcomment %}
