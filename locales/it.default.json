@@ -45,6 +45,10 @@
       "newsletter_success": "Sei dentro. Benvenuto nel branco.",
       "follow_us": "Seguici",
       "copyright": "Tutti i diritti riservati."
+    },
+    "outfit_slider": {
+      "view_product": "Vedi prodotto",
+      "model_placeholder": "Modello"
     }
   },
   "products": {
