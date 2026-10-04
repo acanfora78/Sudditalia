@@ -1,5 +1,51 @@
 {
   "sections": {
+    "outfit": {
+      "type": "hero-outfit-slider",
+      "blocks": {
+        "look1": {
+          "type": "look",
+          "settings": {
+            "product": "sky-blue-shark-zip-boxy",
+            "title": "Sky Blue Shark Zip Boxy Hoodie"
+          }
+        },
+        "look2": {
+          "type": "look",
+          "settings": {
+            "product": "yellow-shark-zip-boxy",
+            "title": "Yellow Shark Zip Boxy Hoodie"
+          }
+        },
+        "look3": {
+          "type": "look",
+          "settings": {
+            "product": "pink-shark-zip-boxy",
+            "title": "Pink Shark Zip Boxy Hoodie"
+          }
+        },
+        "look4": {
+          "type": "look",
+          "settings": {
+            "product": "black-on-black-boxy-zip-hoodie",
+            "title": "Black on Black Boxy Zip Hoodie"
+          }
+        }
+      },
+      "block_order": [
+        "look1",
+        "look2",
+        "look3",
+        "look4"
+      ],
+      "settings": {
+        "kicker": "Nuovo drop",
+        "title": "The Hoodie\nCollection",
+        "subtitle": "Boxy fit, 100% cotone, Made in Italy.",
+        "hint": "Trascina per cambiare",
+        "link_label": "Vedi prodotto"
+      }
+    },
     "hero": {
       "type": "hero-parallax",
       "settings": {
@@ -10,7 +56,8 @@
         "height": 90,
         "text_align": "center",
         "overlay_opacity": 35
-      }
+      },
+      "disabled": true
     },
     "marquee": {
       "type": "marquee-ticker",
@@ -96,6 +143,7 @@
     }
   },
   "order": [
+    "outfit",
     "hero",
     "marquee",
     "featured",

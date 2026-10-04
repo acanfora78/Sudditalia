@@ -1,0 +1,461 @@
+{%- comment -%}
+  Hero "modello fisso, capo che cambia".
+  Il modello resta al centro; ogni blocco "Capo" è un PNG/WebP scontornato del solo capo,
+  esportato sulla STESSA tela della foto del modello, così al centro gli calza addosso.
+  I capi laterali restano in trasparenza. Stili: assets/outfit-slider.css — logica: assets/outfit-slider.js
+{%- endcomment -%}
+{%- liquid
+  assign model = section.settings.model_image
+  assign look_count = section.blocks.size
+  assign ratio = '2 / 3'
+  if model != blank
+    assign ratio = model.width | append: ' / ' | append: model.height
+  endif
+  assign autoplay = 0
+  if section.settings.autoplay
+    assign autoplay = section.settings.autoplay_interval
+  endif
+-%}
+
+{{ 'outfit-slider.css' | asset_url | stylesheet_tag }}
+
+<outfit-slider
+  class="os"
+  id="OutfitSlider-{{ section.id }}"
+  role="region"
+  aria-roledescription="carousel"
+  aria-label="{{ section.settings.title | default: section.settings.aria_label | strip_html | escape }}"
+  tabindex="0"
+  data-gap="{{ section.settings.gap }}"
+  data-ghost="{{ section.settings.ghost_opacity }}"
+  data-side-scale="{{ section.settings.side_scale }}"
+  data-loop="{{ section.settings.loop }}"
+  data-autoplay="{{ autoplay }}"
+  style="
+    --os-height: {{ section.settings.height }}vh;
+    --os-height-s: {{ section.settings.height }}svh;
+    --os-bg: {{ section.settings.bg_color }};
+    --os-text: {{ section.settings.text_color }};
+    --os-ratio: {{ ratio }};
+    --os-figure-h: {{ section.settings.figure_height }}%;
+    --os-figure-h-mobile: {{ section.settings.figure_height_mobile }}%;
+  "
+>
+  <div class="os__stage" data-os-stage>
+    <div class="os__figure" data-os-figure>
+      <div class="os__model">
+        {%- if model != blank -%}
+          {% render 'responsive-image',
+             image: model,
+             sizes: '(max-width: 749px) 86vw, 50vw',
+             widths: '480, 720, 960, 1280, 1600',
+             loading: 'eager',
+             fetchpriority: 'high' %}
+        {%- else -%}
+          {%- comment -%} Segnaposto: manichino in t-shirt nera {%- endcomment -%}
+          <svg viewBox="0 0 600 900" role="img" aria-label="{{ 'sections.outfit_slider.model_placeholder' | t }}" focusable="false">
+            <ellipse cx="300" cy="118" rx="54" ry="64" fill="#b9b2a8"/>
+            <rect x="276" y="168" width="48" height="52" fill="#b9b2a8"/>
+            <path d="M150 330l-22 232a20 20 0 0 0 40 4l24-226zM450 330l22 232a20 20 0 0 1-40 4l-24-226z" fill="#b9b2a8"/>
+            <path d="M204 556h192l-8 322h-74l-14-232-14 232h-74z" fill="#3b3b42"/>
+            <path d="M196 222q104-34 208 0l70 82-44 44-26-30v246H196V318l-26 30-44-44z" fill="#19191b"/>
+            <path d="M262 206q38 34 76 0" fill="none" stroke="#2b2b2f" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+        {%- endif -%}
+      </div>
+
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign product = block.settings.product
+          assign look_title = block.settings.title | default: product.title
+          assign look_url = block.settings.link | default: product.url
+          assign look_image = block.settings.image
+        -%}
+        <div
+          class="os__look{% if forloop.first %} os__look--first{% endif %}"
+          data-os-look
+          data-url="{{ look_url }}"
+          data-title="{{ look_title | escape }}"
+          {{ block.shopify_attributes }}
+        >
+          <div
+            class="os__look-inner"
+            style="--look-x: {{ block.settings.offset_x }}%; --look-y: {{ block.settings.offset_y }}%; --look-scale: {{ block.settings.scale | divided_by: 100.0 }};"
+          >
+            {%- if look_image != blank -%}
+              {%- if forloop.index <= 2 -%}
+                {% render 'responsive-image',
+                   image: look_image,
+                   sizes: '(max-width: 749px) 86vw, 50vw',
+                   widths: '480, 720, 960, 1280, 1600',
+                   loading: 'eager',
+                   alt: look_title %}
+              {%- else -%}
+                {% render 'responsive-image',
+                   image: look_image,
+                   sizes: '(max-width: 749px) 86vw, 50vw',
+                   widths: '480, 720, 960, 1280, 1600',
+                   alt: look_title %}
+              {%- endif -%}
+            {%- else -%}
+              {%- comment -%} Segnaposto: felpa zip sulla stessa tela del manichino {%- endcomment -%}
+              {%- capture placeholder_color -%}{% cycle '#7cc4ea', '#f2c230', '#f29cc0', '#232326' %}{%- endcapture -%}
+              <svg viewBox="0 0 600 900" role="img" aria-label="{{ look_title | escape }}" focusable="false">
+                <path d="M186 214q114-40 228 0l84 96-10 262q-24 14-50 4l-14-232v258H176V344l-14 232q-26 10-50-4l-10-262z" fill="{{ placeholder_color }}"/>
+                <path d="M232 214q68-70 136 0-28 44-68 52-40-8-68-52z" fill="{{ placeholder_color }}" stroke="rgba(0,0,0,.28)" stroke-width="5" stroke-linejoin="round"/>
+                <path d="M300 266v336M176 566h248M176 344l-6 60M424 344l6 60" fill="none" stroke="rgba(0,0,0,.28)" stroke-width="5" stroke-linecap="round"/>
+                <path d="M214 452h58v84h-66zM386 452h-58v84h66z" fill="none" stroke="rgba(0,0,0,.2)" stroke-width="4" stroke-linejoin="round"/>
+              </svg>
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endfor -%}
+
+      {%- liquid
+        assign first_block = section.blocks.first
+        assign first_url = first_block.settings.link | default: first_block.settings.product.url
+      -%}
+      <a class="os__hit" data-os-hit draggable="false" tabindex="-1" {% if first_url != blank %}href="{{ first_url }}"{% else %}hidden{% endif %}>
+        <span class="visually-hidden">{{ 'sections.outfit_slider.view_product' | t }}</span>
+      </a>
+    </div>
+  </div>
+
+  {%- if section.settings.kicker != blank or section.settings.title != blank or section.settings.subtitle != blank -%}
+    <div class="os__intro">
+      {%- if section.settings.kicker != blank -%}
+        <p class="os__kicker">{{ section.settings.kicker }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h1 class="os__title">{{ section.settings.title | newline_to_br }}</h1>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="os__subtitle">{{ section.settings.subtitle | newline_to_br }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="os__bar">
+    {%- if section.settings.hint != blank and look_count > 1 -%}
+      <p class="os__hint" aria-hidden="true">{{ section.settings.hint }}</p>
+    {%- endif -%}
+
+    {%- if look_count > 1 -%}
+      <div class="os__nav">
+        <button type="button" class="os__arrow os__arrow--prev" data-os-prev aria-label="{{ 'general.accessibility.previous' | t }}" aria-controls="OutfitSlider-{{ section.id }}">
+          {% render 'icon', name: 'arrow' %}
+        </button>
+        <span class="os__counter" aria-hidden="true">
+          <span data-os-current>01</span><span class="os__counter-sep">/</span>{% if look_count < 10 %}0{% endif %}{{ look_count }}
+        </span>
+        <button type="button" class="os__arrow os__arrow--next" data-os-next aria-label="{{ 'general.accessibility.next' | t }}" aria-controls="OutfitSlider-{{ section.id }}">
+          {% render 'icon', name: 'arrow' %}
+        </button>
+      </div>
+    {%- endif -%}
+
+    <div class="os__captions" aria-live="polite">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign product = block.settings.product
+          assign look_title = block.settings.title | default: product.title
+          assign look_url = block.settings.link | default: product.url
+        -%}
+        <div class="os__caption{% if forloop.first %} is-active{% endif %}" data-os-caption aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
+          {%- if look_title != blank -%}
+            <span class="os__caption-title">{{ look_title }}</span>
+          {%- endif -%}
+          {%- if product != blank and section.settings.show_price -%}
+            <span class="os__caption-price">
+              {%- if product.price_varies -%}
+                {{ 'products.product.from_price' | t: price: product.price_min | money }}
+              {%- else -%}
+                {{ product.price | money }}
+              {%- endif -%}
+              {%- if product.compare_at_price > product.price -%}
+                <s>{{ product.compare_at_price | money }}</s>
+              {%- endif -%}
+            </span>
+          {%- endif -%}
+          {%- if look_url != blank and section.settings.link_label != blank -%}
+            <a class="os__caption-link" href="{{ look_url }}"{% unless forloop.first %} tabindex="-1"{% endunless %}>
+              {{ section.settings.link_label }}
+              {% render 'icon', name: 'arrow' %}
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</outfit-slider>
+
+<script src="{{ 'outfit-slider.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Hero capi sul modello",
+  "tag": "section",
+  "class": "section-outfit-slider",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Il modello resta fermo, i capi scorrono e quello centrale gli si sovrappone. Le immagini dei capi vanno esportate scontornate sulla stessa tela (stesse dimensioni) della foto del modello."
+    },
+    {
+      "type": "image_picker",
+      "id": "model_image",
+      "label": "Foto del modello (scontornata)",
+      "info": "PNG o WebP trasparente, con il modello in t-shirt neutra. Consigliato 1600 × 2400 px."
+    },
+    {
+      "type": "header",
+      "content": "Testi"
+    },
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Occhiello",
+      "default": "Nuovo drop"
+    },
+    {
+      "type": "textarea",
+      "id": "title",
+      "label": "Titolo",
+      "default": "The Hoodie Collection"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Sottotitolo",
+      "default": "Scorri per cambiare capo."
+    },
+    {
+      "type": "text",
+      "id": "hint",
+      "label": "Suggerimento in basso a sinistra",
+      "default": "Trascina per cambiare"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Testo del link al prodotto",
+      "default": "Vedi prodotto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Mostra il prezzo",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Etichetta accessibilità (se manca il titolo)",
+      "default": "Collezione"
+    },
+    {
+      "type": "header",
+      "content": "Aspetto"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Colore sfondo",
+      "default": "#ecebe7"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Colore testo",
+      "default": "#111113"
+    },
+    {
+      "type": "range",
+      "id": "height",
+      "label": "Altezza sezione",
+      "min": 60,
+      "max": 100,
+      "step": 5,
+      "unit": "vh",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "figure_height",
+      "label": "Altezza modello (desktop)",
+      "min": 50,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "default": 76
+    },
+    {
+      "type": "range",
+      "id": "figure_height_mobile",
+      "label": "Altezza modello (mobile)",
+      "min": 40,
+      "max": 90,
+      "step": 2,
+      "unit": "%",
+      "default": 62
+    },
+    {
+      "type": "header",
+      "content": "Capi laterali"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Distanza tra i capi",
+      "info": "In percentuale della larghezza del modello.",
+      "min": 40,
+      "max": 150,
+      "step": 5,
+      "unit": "%",
+      "default": 70
+    },
+    {
+      "type": "range",
+      "id": "ghost_opacity",
+      "label": "Opacità dei capi laterali",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "%",
+      "default": 22
+    },
+    {
+      "type": "range",
+      "id": "side_scale",
+      "label": "Dimensione dei capi laterali",
+      "min": 70,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "default": 92
+    },
+    {
+      "type": "header",
+      "content": "Comportamento"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Scorrimento continuo (dall'ultimo torna al primo)",
+      "info": "Richiede almeno 3 capi.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Cambio automatico",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "autoplay_interval",
+      "label": "Intervallo cambio automatico",
+      "min": 2,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 4
+    }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Capo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Immagine del capo (scontornata)",
+          "info": "Solo il capo, su sfondo trasparente, stessa tela della foto del modello."
+        },
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Prodotto collegato"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Nome (se diverso dal prodotto)"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (se diverso dal prodotto)"
+        },
+        {
+          "type": "header",
+          "content": "Allineamento sul modello"
+        },
+        {
+          "type": "range",
+          "id": "scale",
+          "label": "Scala",
+          "min": 60,
+          "max": 140,
+          "step": 1,
+          "unit": "%",
+          "default": 100
+        },
+        {
+          "type": "range",
+          "id": "offset_x",
+          "label": "Sposta in orizzontale",
+          "min": -20,
+          "max": 20,
+          "step": 0.5,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "offset_y",
+          "label": "Sposta in verticale",
+          "min": -20,
+          "max": 20,
+          "step": 0.5,
+          "unit": "%",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero capi sul modello",
+      "blocks": [
+        {
+          "type": "look",
+          "settings": {
+            "title": "Capo 1"
+          }
+        },
+        {
+          "type": "look",
+          "settings": {
+            "title": "Capo 2"
+          }
+        },
+        {
+          "type": "look",
+          "settings": {
+            "title": "Capo 3"
+          }
+        },
+        {
+          "type": "look",
+          "settings": {
+            "title": "Capo 4"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

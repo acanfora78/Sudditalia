@@ -84,6 +84,22 @@ Per usare un logo diverso senza passare dal Theme Editor, sostituisci il file
 - Colore "bocca" durante l'inghiottimento (buio caldo `#5a140c`).
 - Colore testo, durata sequenza (1200–2400 ms).
 
+### Sezione Hero capi sul modello
+Il modello resta fermo al centro, i capi scorrono in orizzontale e quello centrale gli si sovrappone
+addosso; i capi vicini restano in trasparenza ai lati. Si cambia capo trascinando, con lo swipe
+orizzontale del trackpad, con le frecce o da tastiera.
+
+- **Foto del modello**: PNG/WebP trasparente, modello in t-shirt neutra (consigliato 1600 × 2400 px).
+- **Blocchi "Capo"** (fino a 12): immagine del solo capo scontornato, **esportata sulla stessa tela
+  della foto del modello** (stesse dimensioni in pixel, capo già in posizione sul busto). Ogni blocco
+  si collega a un prodotto: nome, prezzo e link arrivano da lì.
+- **Allineamento**: per ogni capo ci sono *Scala*, *Sposta in orizzontale* e *Sposta in verticale*
+  per correggere a occhio senza riesportare l'immagine.
+- **Capi laterali**: distanza, opacità e dimensione regolabili; scorrimento continuo e cambio automatico opzionali.
+- Finché non carichi le immagini la sezione mostra un manichino e delle felpe segnaposto.
+
+File: `sections/hero-outfit-slider.liquid`, `assets/outfit-slider.css`, `assets/outfit-slider.js`.
+
 ### Altre sezioni
 Header, Hero parallax, Griglia prodotti, Collection showcase, Manifesto/Quote, Marquee ticker,
 Prodotto, Collezione, Footer, Testo libero — ognuna con le proprie impostazioni (colori, testi,
@@ -109,13 +125,14 @@ immagini, toggle animazioni).
 config/          settings_schema.json, settings_data.json
 layout/          theme.liquid, password.liquid
 locales/         it.default.json
-sections/        intro-shark, header, footer, hero-parallax, featured-collection,
+sections/        intro-shark, header, footer, hero-parallax, hero-outfit-slider, featured-collection,
                  collection-showcase, manifesto-quote, marquee-ticker, main-product,
                  main-collection, main-cart, main-*, rich-text
 snippets/        product-card, responsive-image, icon, meta-tags
 templates/       *.json (OS 2.0) + customers/*.liquid + gift_card.liquid
 assets/          base.css, animations.css, theme.js, intro-shark.js, parallax.js,
                  text-reveal.js, product-card.js, product-gallery.js, custom-cursor.js,
+                 outfit-slider.css, outfit-slider.js,
                  shark-logo-placeholder.svg
 ```
 
