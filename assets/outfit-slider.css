@@ -195,6 +195,12 @@
   display: flex;
   align-items: center;
   gap: 14px;
+  padding: 4px;
+  border-radius: 999px;
+  /* leggibile anche quando il modello arriva fino in fondo alla sezione */
+  background: color-mix(in srgb, var(--os-bg, #ecebe7) 80%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   font-variant-numeric: tabular-nums;
 }
 .os__counter {
